@@ -24,7 +24,7 @@ public class GameController {
     @GetMapping 
     public ResponseEntity<Response> GetGameTypes(){
         List<GameTypesDto> res =  restGameService.GetGameTypes();
-        if (!res.isEmpty()){
+        if (res.isEmpty()){
             throw new DataNotFoundExceptionHandler("Data not found");
         }
         return new ResponseEntity<>(new Response(200, "Successfully retrieved game type data.", res), HttpStatus.OK);
