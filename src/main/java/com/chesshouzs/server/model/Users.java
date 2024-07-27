@@ -148,7 +148,12 @@ public class Users implements ModelInterface<Users, UserDto>, UserDetails {
     }
 
     public UserDto convertToDto(Users data){
-        return new UserDto();
+        return new UserDto(
+            this.username, 
+            this.email, 
+            this.profilePicture, 
+            this.eloPoints
+        );
     }
 
 }
