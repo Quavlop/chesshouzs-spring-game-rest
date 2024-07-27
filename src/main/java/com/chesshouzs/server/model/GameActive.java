@@ -150,6 +150,7 @@ public class GameActive implements ModelInterface<GameActive, GameActiveDto>{
 
     public GameActiveDto convertToDto(GameActive data){
         return new GameActiveDto(
+            this.id,
             this.whitePlayer.convertToDto(this.whitePlayer), 
             this.blackPlayer.convertToDto(this.blackPlayer),  
             this.gameTypeVariant.convertToDto(this.gameTypeVariant), 
