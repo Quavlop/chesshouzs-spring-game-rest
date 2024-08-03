@@ -11,6 +11,7 @@ public class GameActiveDto {
     private GameTypeVariantDto gameTypeVariant;
     private LocalDateTime startTime; 
     private LocalDateTime endTime;
+    private String gameNotation;
 
 
     public GameActiveDto(UUID id, UserDto whitePlayer, UserDto blackPlayer, GameTypeVariantDto gameTypeVariant, LocalDateTime startTime, LocalDateTime endTime) {
@@ -52,6 +53,14 @@ public class GameActiveDto {
 
     public void setGameTypeVariant(GameTypeVariantDto gameTypeVariant) {
         this.gameTypeVariant = gameTypeVariant;
+    }
+
+    public String getGameNotation(){
+        return this.gameNotation;
+    }
+
+    public void setGameNotation(String gameNotation){
+        this.gameNotation = gameNotation;
     }
 
     public LocalDateTime getStartTime() {
