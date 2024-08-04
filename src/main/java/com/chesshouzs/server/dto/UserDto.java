@@ -1,20 +1,31 @@
 package com.chesshouzs.server.dto;
 
+import java.util.UUID;
+
 public class UserDto {
 
+    private String id;
     private String username;
     private String email; 
     private String profilePicture; 
     private int eloPoints;  
 
 
-    public UserDto(String username, String email, String profilePicture, int eloPoints) {
+    public UserDto(String id, String username, String email, String profilePicture, int eloPoints) {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.profilePicture = profilePicture;
         this.eloPoints = eloPoints;
     }
 
+    public String getId(){
+        return this.id;
+    }
+
+    public void setID(String id){
+        this.id = id;
+    }
 
     public String getUsername() {
         return this.username;
