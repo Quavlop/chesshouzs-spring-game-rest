@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.chesshouzs.server.constants.GameConstants;
 import com.chesshouzs.server.constants.RedisConstants;
 import com.chesshouzs.server.dto.GameActiveDto;
 import com.chesshouzs.server.model.GameActive;
@@ -41,6 +42,13 @@ public class RestMatchService {
         }
 
         result.setGameNotation(notation.get("move"));
+        String turn = notation.get("turn");
+        if (turn == "1"){
+            result.setTurn(GameConstants.WHITE_COLOR);
+        } else {
+            result.setTurn(GameConstants.BLACK_COLOR);
+        }
+
         return result;
     }
 }
