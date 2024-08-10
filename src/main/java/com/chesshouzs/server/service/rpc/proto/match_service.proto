@@ -1,0 +1,11 @@
+syntax="proto3"; 
+
+package pb;
+
+import "match_service_model.proto";
+
+option java_package="com.chesshouzs.server.service.rpc.pb";
+
+service MatchService {
+    rpc ValidateMove(ValidateMoveReq) returns (ValidateMoveResp);
+}
