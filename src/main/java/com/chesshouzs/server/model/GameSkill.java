@@ -7,10 +7,12 @@ import java.util.UUID;
 import com.chesshouzs.server.dto.GameActiveDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+@Entity
 public class GameSkill implements ModelInterface<GameSkill, PlayerSkillDataCountDto> {
     
     @Id 
@@ -167,7 +169,8 @@ public class GameSkill implements ModelInterface<GameSkill, PlayerSkillDataCount
             this.radiusY, 
             this.autoTrigger, 
             this.duration, 
-            this.usageCount
+            this.usageCount, 
+            null
         );
     }
 

@@ -1,5 +1,7 @@
 package com.chesshouzs.server.controller.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chesshouzs.server.dto.GameActiveDto;
+import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
 import com.chesshouzs.server.model.Users;
 import com.chesshouzs.server.service.http.RestMatchService;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
@@ -30,5 +33,14 @@ public class MatchController {
             throw new DataNotFoundExceptionHandler("Data not found"); 
         }
         return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully retrieved game type data.", res), HttpStatus.OK);
+    } 
+
+    @GetMapping("/skills")
+    public ResponseEntity<Response> GetPlayerMatchSkillStats(@AuthenticationPrincipal Users user){
+        List<PlayerSkillDataCountDto> res = restMatchService.GetMatchSkillData(user.getId()); 
+        if (res == null){
+            throw new DataNotFoundExceptionHandler("Data not found");    
+        }
+        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully retrieved player match skill stats.", res), HttpStatus.OK);
     }
 }

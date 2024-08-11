@@ -70,9 +70,21 @@ public class RestMatchService {
         }
 
         // TODO : get redis key for player data count and initialize the data on handle matchmaking
-        
+        String key = RedisConstants.getPlayerMatchSkillStatsKey(userId.toString()); 
+        Map <String, String> skillStats = redis.hgetall(key);
+        if (skillStats == null){
+            return null;
+        }
+
         for (GameSkill skill : data){
-            result.add(skill.convertToDto(skill));
+            PlayerSkillDataCountDto skillDto = skill.convertToDto(skill);
+            String skillRedisData = skillStats.get(skill.getId().toString());
+            if (skillRedisData == null){
+                continue;
+            }
+            Integer remainingCount = Integer.parseInt(skillRedisData);
+            skillDto.setCurrentUsageCount(remainingCount);
+            result.add(skillDto);
         }
 
         return result;

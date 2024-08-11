@@ -15,9 +15,10 @@ public class PlayerSkillDataCountDto {
     private Boolean autoTrigger; 
     private Integer duration; 
     private Integer usageCount;
+    private Integer currentUsageCount;
 
 
-    public PlayerSkillDataCountDto(UUID id, String name, String description, Boolean forSelf, Boolean forEnemy, Integer radiusX, Integer radiusY, Boolean autoTrigger, Integer duration, Integer usageCount) {
+    public PlayerSkillDataCountDto(UUID id, String name, String description, Boolean forSelf, Boolean forEnemy, Integer radiusX, Integer radiusY, Boolean autoTrigger, Integer duration, Integer usageCount, Integer currentUsageCount) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,6 +29,7 @@ public class PlayerSkillDataCountDto {
         this.autoTrigger = autoTrigger;
         this.duration = duration;
         this.usageCount = usageCount;
+        this.currentUsageCount = currentUsageCount;
     }
 
     public UUID getId() {
@@ -120,5 +122,13 @@ public class PlayerSkillDataCountDto {
 
     public void setUsageCount(Integer usageCount) {
         this.usageCount = usageCount;
+    }
+
+    public Integer getCurrentUsageCount() {
+        return this.currentUsageCount;
+    }
+
+    public void setCurrentUsageCount(Integer currentUsageCount) {
+        this.currentUsageCount = currentUsageCount;
     }
 }
