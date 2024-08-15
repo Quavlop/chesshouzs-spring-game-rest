@@ -12,5 +12,25 @@ public class GameHelper {
     
         return minutes;
     }
+
+    public static char[][] convertNotationToArray(String input) {
+        String[] rows = input.split("\\|");
+        char[][] result = new char[rows.length][];
+
+        for (int i = 0; i < rows.length; i++) {
+            result[i] = rows[i].toCharArray();
+        }
+
+        return result;
+    }
+
+    public static String convertArrayToNotation(char[][] array) {
+        StringBuilder sb = new StringBuilder();
+        for (char[] row : array) {
+            sb.append(new String(row)).append("|");
+        }
+        // Remove the trailing pipe
+        return sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
+    }
     
 }

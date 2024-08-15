@@ -2,10 +2,12 @@ package com.chesshouzs.server.service.http;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
@@ -16,13 +18,18 @@ import com.chesshouzs.server.constants.GameConstants;
 import com.chesshouzs.server.constants.RedisConstants;
 import com.chesshouzs.server.dto.GameActiveDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
+import com.chesshouzs.server.dto.kafka.ExecuteSkillMessage;
+import com.chesshouzs.server.dto.request.ExecuteSkillReqDto;
+import com.chesshouzs.server.dto.response.ExecuteSkillResDto;
 import com.chesshouzs.server.model.GameActive;
 import com.chesshouzs.server.model.GameSkill;
 import com.chesshouzs.server.model.redis.GameMove;
 import com.chesshouzs.server.repository.GameActiveRepository;
 import com.chesshouzs.server.repository.GameSkillRepository;
 import com.chesshouzs.server.repository.RedisBaseRepository;
-import com.chesshouzs.server.constants.RedisConstants;
+import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
+import com.chesshouzs.server.constants.SkillConstants;
+
 
 @Service
 public class RestMatchService {
@@ -35,6 +42,9 @@ public class RestMatchService {
 
     @Autowired 
     private RedisBaseRepository redis;
+
+    @Autowired
+    private SkillService skillService;
 
     public GameActiveDto GetMatchData(UUID userId){
         GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
@@ -88,5 +98,45 @@ public class RestMatchService {
         }
 
         return result;
+    }
+
+    public ExecuteSkillResDto ExecuteSkill(UUID userId, ExecuteSkillReqDto params) throws Exception {
+    
+        Map<UUID, BiFunction<UUID, ExecuteSkillReqDto, ExecuteSkillMessage>> skillsMap = new HashMap<>();
+
+        Optional<GameSkill> data = gameSkillRepository.findById(params.getSkillId());
+        if (!data.isPresent()){
+            return null;
+        }
+
+        GameSkill skill = data.get();
+
+        // produce message to be published 
+        // check which skill is being executed
+        ExecuteSkillMessage action = new ExecuteSkillMessage(); 
+        if (SkillConstants.SKILL_ENLIGHTENED_APPRENTICE.equals(skill.getName())) {
+            action = skillService.executeEnlightenedApprentice(userId, params);
+        } else if (SkillConstants.SKILL_THE_GREAT_WALL.equals(skill.getName())) {
+            action = skillService.executeTheGreatWall(userId, params);
+        } else if (SkillConstants.SKILL_FOG_MASTER.equals(skill.getName())) {
+            action = skillService.executeFogMaster(userId, params);
+        } else if (SkillConstants.SKILL_FREEZING_WAND.equals(skill.getName())) {
+            action = skillService.executeFreezingWand(userId, params);
+        } else if (SkillConstants.SKILL_PARALYZER.equals(skill.getName())) {
+            action = skillService.executeParalyzer(userId, params);
+        } else {
+            throw new DataNotFoundExceptionHandler("Skill data not found");
+        }
+
+        if (action == null){
+            throw new Exception("Failed to execute skill");
+        }
+
+        // save new state to redis 
+        // save updated skill usage count to redis
+
+        // publish message to kafka        
+
+        return new ExecuteSkillResDto(null);
     }
 }

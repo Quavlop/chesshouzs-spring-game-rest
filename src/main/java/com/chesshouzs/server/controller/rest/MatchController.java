@@ -7,11 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chesshouzs.server.dto.GameActiveDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
+import com.chesshouzs.server.dto.request.ExecuteSkillReqDto;
 import com.chesshouzs.server.model.Users;
 import com.chesshouzs.server.service.http.RestMatchService;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
@@ -42,5 +46,10 @@ public class MatchController {
             throw new DataNotFoundExceptionHandler("Data not found");    
         }
         return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully retrieved player match skill stats.", res), HttpStatus.OK);
+    }
+
+    @PostMapping("/skills/execute/{id}")
+    public ResponseEntity<Response> ExecuteSkill(@PathVariable("id") String id, @RequestBody ExecuteSkillReqDto params){
+        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully execute skill.", null), HttpStatus.OK);
     }
 }
