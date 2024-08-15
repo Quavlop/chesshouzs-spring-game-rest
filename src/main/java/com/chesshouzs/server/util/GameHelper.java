@@ -29,7 +29,6 @@ public class GameHelper {
         for (char[] row : array) {
             sb.append(new String(row)).append("|");
         }
-        // Remove the trailing pipe
         return sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
     }
     
