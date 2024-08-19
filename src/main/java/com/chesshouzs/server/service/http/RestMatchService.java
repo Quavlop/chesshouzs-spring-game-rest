@@ -119,15 +119,15 @@ public class RestMatchService {
         // check which skill is being executed
         ExecuteSkillMessage action = new ExecuteSkillMessage(); 
         if (SkillConstants.SKILL_ENLIGHTENED_APPRENTICE.equals(skill.getName())) {
-            action = skillService.executeEnlightenedApprentice(userId, params);
+            action = skillService.executeEnlightenedApprentice(userId, params, skill);
         } else if (SkillConstants.SKILL_THE_GREAT_WALL.equals(skill.getName())) {
-            action = skillService.executeTheGreatWall(userId, params);
+            action = skillService.executeTheGreatWall(userId, params, skill);
         } else if (SkillConstants.SKILL_FOG_MASTER.equals(skill.getName())) {
-            action = skillService.executeFogMaster(userId, params);
+            action = skillService.executeFogMaster(userId, params, skill);
         } else if (SkillConstants.SKILL_FREEZING_WAND.equals(skill.getName())) {
-            action = skillService.executeFreezingWand(userId, params);
+            action = skillService.executeFreezingWand(userId, params, skill);
         } else if (SkillConstants.SKILL_PARALYZER.equals(skill.getName())) {
-            action = skillService.executeParalyzer(userId, params);
+            action = skillService.executeParalyzer(userId, params, skill);
         } else {
             throw new DataNotFoundExceptionHandler("Skill data not found");
         }

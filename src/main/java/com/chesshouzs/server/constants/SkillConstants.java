@@ -8,4 +8,6 @@ public class SkillConstants {
 	public static String SKILL_FREEZING_WAND = "Freezing Wand";
 	public static String SKILL_PARALYZER = "Paralyzer";
 
+	public static Integer THE_GREAT_WALL_ROW_THRESHOLD = 3;
+
 }

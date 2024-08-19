@@ -15,10 +15,12 @@ public class PlayerSkillDataCountDto {
     private Boolean autoTrigger; 
     private Integer duration; 
     private Integer usageCount;
+    private Integer rowLimit; 
+    private Integer colLimit;
     private Integer currentUsageCount;
 
 
-    public PlayerSkillDataCountDto(UUID id, String name, String description, Boolean forSelf, Boolean forEnemy, Integer radiusX, Integer radiusY, Boolean autoTrigger, Integer duration, Integer usageCount, Integer currentUsageCount) {
+    public PlayerSkillDataCountDto(UUID id, String name, String description, Boolean forSelf, Boolean forEnemy, Integer radiusX, Integer radiusY, Boolean autoTrigger, Integer duration, Integer usageCount, Integer currentUsageCount, Integer rowLimit, Integer colLimit) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -30,6 +32,8 @@ public class PlayerSkillDataCountDto {
         this.duration = duration;
         this.usageCount = usageCount;
         this.currentUsageCount = currentUsageCount;
+        this.rowLimit = rowLimit; 
+        this.colLimit = colLimit;
     }
 
     public UUID getId() {
@@ -130,5 +134,21 @@ public class PlayerSkillDataCountDto {
 
     public void setCurrentUsageCount(Integer currentUsageCount) {
         this.currentUsageCount = currentUsageCount;
+    }
+
+    public Integer getRowLimit() {
+        return this.rowLimit;
+    }
+
+    public void setRowLimit(Integer rowLimit) {
+        this.rowLimit = rowLimit;
+    }
+
+    public Integer getColLimit() {
+        return this.colLimit;
+    }
+
+    public void setCowLimit(Integer colLimit) {
+        this.colLimit = colLimit;
     }
 }

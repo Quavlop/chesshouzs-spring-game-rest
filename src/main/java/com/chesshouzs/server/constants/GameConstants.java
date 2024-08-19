@@ -4,6 +4,9 @@ public class GameConstants {
     public static String WHITE_COLOR = "WHITE";
     public static String BLACK_COLOR = "BLACK";
 
+	public static char NONCHARACTER_WALL = '0';
+
+	public static char NONCHARACTER_EMPTY = '.';
 
     public static char WHITE_CHARACTER_PAWN = 'P'; 
 	public static char WHITE_CHARACTER_KNIGHT = 'N'; 

@@ -28,13 +28,15 @@ public class GameSkill implements ModelInterface<GameSkill, PlayerSkillDataCount
     private Boolean autoTrigger; 
     private Integer duration; 
     private Integer usageCount;
+    private Integer rowLimit; 
+    private Integer colLimit;
     private LocalDateTime createdAt; 
     private LocalDateTime updatedAt;
 
     public GameSkill(){}
 
 
-    public GameSkill(UUID id, String name, String description, Boolean forSelf, Boolean forEnemy, Integer radiusX, Integer radiusY, Boolean autoTrigger, Integer duration, Integer usageCount, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public GameSkill(UUID id, String name, String description, Boolean forSelf, Boolean forEnemy, Integer radiusX, Integer radiusY, Boolean autoTrigger, Integer duration, Integer usageCount, Integer rowLimit, Integer colLimit, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -45,6 +47,8 @@ public class GameSkill implements ModelInterface<GameSkill, PlayerSkillDataCount
         this.autoTrigger = autoTrigger;
         this.duration = duration;
         this.usageCount = usageCount;
+        this.rowLimit = rowLimit; 
+        this.colLimit = colLimit;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -142,6 +146,22 @@ public class GameSkill implements ModelInterface<GameSkill, PlayerSkillDataCount
         this.usageCount = usageCount;
     }
 
+    public Integer getRowLimit() {
+        return this.rowLimit;
+    }
+
+    public void setRowLimit(Integer rowLimit) {
+        this.rowLimit = rowLimit;
+    }
+
+    public Integer getColLimit() {
+        return this.colLimit;
+    }
+
+    public void setCowLimit(Integer colLimit) {
+        this.colLimit = colLimit;
+    }
+
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
@@ -170,6 +190,8 @@ public class GameSkill implements ModelInterface<GameSkill, PlayerSkillDataCount
             this.autoTrigger, 
             this.duration, 
             this.usageCount, 
+            this.rowLimit, 
+            this.colLimit,
             null
         );
     }
