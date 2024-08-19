@@ -1,6 +1,7 @@
 package com.chesshouzs.server.controller.rest;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.chesshouzs.server.config.queue.KafkaMessageProducer;
+import com.chesshouzs.server.constants.KafkaConstants;
 import com.chesshouzs.server.dto.GameActiveDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
 import com.chesshouzs.server.dto.request.ExecuteSkillReqDto;
+import com.chesshouzs.server.dto.response.ExecuteSkillResDto;
 import com.chesshouzs.server.model.Users;
 import com.chesshouzs.server.service.http.RestMatchService;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
@@ -49,7 +53,12 @@ public class MatchController {
     }
 
     @PostMapping("/skills/execute/{id}")
-    public ResponseEntity<Response> ExecuteSkill(@PathVariable("id") String id, @RequestBody ExecuteSkillReqDto params){
-        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully execute skill.", null), HttpStatus.OK);
+    public ResponseEntity<Response> ExecuteSkill(@AuthenticationPrincipal Users user, @PathVariable("id") String id, @RequestBody ExecuteSkillReqDto params) throws Exception{
+        params.setSkillId(UUID.fromString(id));
+        ExecuteSkillResDto res = restMatchService.ExecuteSkill(user.getId(), params);
+        if (res == null) {
+            throw new Exception("Failed to execute skill"); 
+        }
+        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully execute skill.", res), HttpStatus.OK);
     }
 }

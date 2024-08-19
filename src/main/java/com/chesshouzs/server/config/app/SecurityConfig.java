@@ -1,8 +1,12 @@
 package com.chesshouzs.server.config.app;
 
 import java.lang.SuppressWarnings;
+import java.util.List;
+import java.util.Arrays;
 
 import com.chesshouzs.server.service.http.CustomUserDetailsService;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,10 +18,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${client.url}")
+    private String clientUrl;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @SuppressWarnings("unused") private final CustomUserDetailsService userDetailsService;
@@ -41,6 +49,16 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
+
+        http.cors().configurationSource(request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedOrigins(List.of(clientUrl));  
+            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            config.setAllowCredentials(true);
+            config.setAllowedHeaders(Arrays.asList("*"));  
+
+            return config;
+        });
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         

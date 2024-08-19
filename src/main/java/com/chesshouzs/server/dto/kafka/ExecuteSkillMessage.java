@@ -2,27 +2,19 @@ package com.chesshouzs.server.dto.kafka;
 
 import java.util.UUID;
 
-import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
-
 public class ExecuteSkillMessage {
     private String state; 
     private UUID gameId; 
     private UUID executorUserId;
-    private PlayerSkillDataCountDto skillData; 
+    private UUID skillId; 
 
     public ExecuteSkillMessage(){}
 
-    public ExecuteSkillMessage(String state, UUID gameId, UUID executorUserId, PlayerSkillDataCountDto skillData) {
+    public ExecuteSkillMessage(String state, UUID gameId, UUID executorUserId, UUID skillId) {
         this.state = state;
         this.gameId = gameId;
         this.executorUserId = executorUserId;
-        this.skillData = skillData;
-    }
-
-    public ExecuteSkillMessage(String state, UUID gameId, UUID executorUserId) {
-        this.state = state;
-        this.gameId = gameId;
-        this.executorUserId = executorUserId;
+        this.skillId = skillId;
     }
 
     public String getState() {
@@ -49,12 +41,12 @@ public class ExecuteSkillMessage {
         this.executorUserId = executorUserId;
     }
 
-    public PlayerSkillDataCountDto getSkillData() {
-        return this.skillData;
+    public UUID getSkillId() {
+        return this.skillId;
     }
 
-    public void setSkillData(PlayerSkillDataCountDto skillData) {
-        this.skillData = skillData;
+    public void setSkillData(UUID skillId) {
+        this.skillId = skillId;
     }
 
 }

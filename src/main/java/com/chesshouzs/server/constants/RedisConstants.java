@@ -11,9 +11,4 @@ public class RedisConstants {
     public static String getPlayerMatchSkillStatsKey(String id ){
         return GAME_SKILL_KEY_IDENTIFIER + id;
     }
-
-    public static void a(){
-        
-    }
-
 }

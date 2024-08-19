@@ -66,7 +66,7 @@ public class SkillService {
 
         String newNotation = GameHelper.convertArrayToNotation(state);
 
-        return new ExecuteSkillMessage(newNotation, params.getGameId(), userId);
+        return new ExecuteSkillMessage(newNotation, params.getGameId(), userId, params.getSkillId());
     }
 
     public ExecuteSkillMessage executeTheGreatWall(UUID userId, ExecuteSkillReqDto params){

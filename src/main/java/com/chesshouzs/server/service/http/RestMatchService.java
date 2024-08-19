@@ -14,7 +14,10 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.chesshouzs.server.config.queue.KafkaMessageProducer;
+import com.chesshouzs.server.config.queue.KafkaMessageWrapper;
 import com.chesshouzs.server.constants.GameConstants;
+import com.chesshouzs.server.constants.KafkaConstants;
 import com.chesshouzs.server.constants.RedisConstants;
 import com.chesshouzs.server.dto.GameActiveDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
@@ -45,6 +48,9 @@ public class RestMatchService {
 
     @Autowired
     private SkillService skillService;
+
+    @Autowired 
+    private KafkaMessageProducer messageProducer;
 
     public GameActiveDto GetMatchData(UUID userId){
         GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
@@ -102,8 +108,6 @@ public class RestMatchService {
 
     public ExecuteSkillResDto ExecuteSkill(UUID userId, ExecuteSkillReqDto params) throws Exception {
     
-        Map<UUID, BiFunction<UUID, ExecuteSkillReqDto, ExecuteSkillMessage>> skillsMap = new HashMap<>();
-
         Optional<GameSkill> data = gameSkillRepository.findById(params.getSkillId());
         if (!data.isPresent()){
             return null;
@@ -132,11 +136,9 @@ public class RestMatchService {
             throw new Exception("Failed to execute skill");
         }
 
-        // save new state to redis 
-        // save updated skill usage count to redis
-
         // publish message to kafka        
+        messageProducer.publish(KafkaConstants.TOPIC_EXECUTE_SKILL, params.getGameId().toString(), action);
 
-        return new ExecuteSkillResDto(null);
+        return new ExecuteSkillResDto("success");
     }
 }
