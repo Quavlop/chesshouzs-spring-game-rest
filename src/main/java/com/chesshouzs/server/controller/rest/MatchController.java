@@ -21,6 +21,7 @@ import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
 import com.chesshouzs.server.dto.request.ExecuteSkillReqDto;
 import com.chesshouzs.server.dto.response.ExecuteSkillResDto;
 import com.chesshouzs.server.model.Users;
+import com.chesshouzs.server.model.cassandra.tables.PlayerGameState;
 import com.chesshouzs.server.service.http.RestMatchService;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
 import com.chesshouzs.server.util.response.Response;
@@ -60,5 +61,15 @@ public class MatchController {
             throw new Exception("Failed to execute skill"); 
         }
         return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully execute skill.", res), HttpStatus.OK);
+    }
+
+    @GetMapping("/player/status")
+    public ResponseEntity<Response> GetPlayerStatus(@AuthenticationPrincipal Users user) throws Exception {
+        PlayerGameState res = restMatchService.GetPlayerStatus(user.getId()); 
+        if (res == null) {
+            throw new Exception("Failed to get player skill status");
+        }
+        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully retrieved game type data.", null), HttpStatus.OK);
+
     }
 }

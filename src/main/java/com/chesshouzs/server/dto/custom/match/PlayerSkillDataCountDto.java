@@ -17,10 +17,12 @@ public class PlayerSkillDataCountDto {
     private Integer usageCount;
     private Integer rowLimit; 
     private Integer colLimit;
+    private String type; 
+    private Boolean permanent;
     private Integer currentUsageCount;
 
 
-    public PlayerSkillDataCountDto(UUID id, String name, String description, Boolean forSelf, Boolean forEnemy, Integer radiusX, Integer radiusY, Boolean autoTrigger, Integer duration, Integer usageCount, Integer currentUsageCount, Integer rowLimit, Integer colLimit) {
+    public PlayerSkillDataCountDto(UUID id, String name, String description, Boolean forSelf, Boolean forEnemy, Integer radiusX, Integer radiusY, Boolean autoTrigger, Integer duration, Integer usageCount, Integer currentUsageCount, Integer rowLimit, Integer colLimit, String type, Boolean permanent) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -32,6 +34,8 @@ public class PlayerSkillDataCountDto {
         this.duration = duration;
         this.usageCount = usageCount;
         this.currentUsageCount = currentUsageCount;
+        this.type = type; 
+        this.permanent = permanent;
         this.rowLimit = rowLimit; 
         this.colLimit = colLimit;
     }
@@ -150,5 +154,21 @@ public class PlayerSkillDataCountDto {
 
     public void setCowLimit(Integer colLimit) {
         this.colLimit = colLimit;
+    }
+
+    public String getType(){
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Boolean getPermanent(){
+        return this.permanent;
+    }
+
+    public void setPermanent(Boolean permanent){
+        this.permanent = permanent;
     }
 }

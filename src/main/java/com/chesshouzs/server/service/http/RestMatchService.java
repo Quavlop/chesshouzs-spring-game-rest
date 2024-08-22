@@ -26,10 +26,13 @@ import com.chesshouzs.server.dto.request.ExecuteSkillReqDto;
 import com.chesshouzs.server.dto.response.ExecuteSkillResDto;
 import com.chesshouzs.server.model.GameActive;
 import com.chesshouzs.server.model.GameSkill;
+import com.chesshouzs.server.model.cassandra.keys.PlayerGameStatePrimaryKeys;
+import com.chesshouzs.server.model.cassandra.tables.PlayerGameState;
 import com.chesshouzs.server.model.redis.GameMove;
 import com.chesshouzs.server.repository.GameActiveRepository;
 import com.chesshouzs.server.repository.GameSkillRepository;
 import com.chesshouzs.server.repository.RedisBaseRepository;
+import com.chesshouzs.server.repository.cassandra.PlayerGameStatesRepository;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
 import com.chesshouzs.server.constants.SkillConstants;
 
@@ -48,6 +51,9 @@ public class RestMatchService {
 
     @Autowired
     private SkillService skillService;
+
+    @Autowired 
+    private PlayerGameStatesRepository playerGameStateCassandraRepository;
 
     @Autowired 
     private KafkaMessageProducer messageProducer;
@@ -140,5 +146,20 @@ public class RestMatchService {
         messageProducer.publish(KafkaConstants.TOPIC_EXECUTE_SKILL, params.getGameId().toString(), action);
 
         return new ExecuteSkillResDto("success");
+    }
+
+    public PlayerGameState GetPlayerStatus(UUID userId) throws Exception {
+        GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
+        if (matchData == null){
+            return null;
+        }
+
+        PlayerGameStatePrimaryKeys keys = new PlayerGameStatePrimaryKeys(userId.toString(), matchData.getId().toString());
+        Optional<PlayerGameState> res = playerGameStateCassandraRepository.findById(keys);
+        if (res == null){
+            return null;
+        }
+        
+        return res.get();
     }
 }
