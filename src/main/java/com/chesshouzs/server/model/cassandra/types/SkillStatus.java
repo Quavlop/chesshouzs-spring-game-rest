@@ -3,7 +3,6 @@ package com.chesshouzs.server.model.cassandra.types;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyClass;
 
-@PrimaryKeyClass
 public class SkillStatus {
 
     @Column("position")

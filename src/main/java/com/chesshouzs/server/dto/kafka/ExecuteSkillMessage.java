@@ -7,6 +7,7 @@ public class ExecuteSkillMessage {
     private UUID gameId; 
     private UUID executorUserId;
     private UUID skillId; 
+    private SkillPosition position;
 
     public ExecuteSkillMessage(){}
 
@@ -16,6 +17,15 @@ public class ExecuteSkillMessage {
         this.executorUserId = executorUserId;
         this.skillId = skillId;
     }
+
+    public ExecuteSkillMessage(String state, UUID gameId, UUID executorUserId, UUID skillId, SkillPosition position) {
+        this.state = state;
+        this.gameId = gameId;
+        this.executorUserId = executorUserId;
+        this.skillId = skillId;
+        this.position = position;
+    }
+
 
     public String getState() {
         return this.state;
@@ -47,6 +57,14 @@ public class ExecuteSkillMessage {
 
     public void setSkillData(UUID skillId) {
         this.skillId = skillId;
+    }
+
+    public SkillPosition getPosition(){
+        return this.position;
+    }
+
+    public void setPosition(SkillPosition position){
+        this.position = position;
     }
 
 }

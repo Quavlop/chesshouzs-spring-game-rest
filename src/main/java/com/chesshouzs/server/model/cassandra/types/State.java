@@ -4,7 +4,6 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyClass;
 import java.util.List;
 
-@PrimaryKeyClass
 public class State {
 
     @Column("duration_left")
@@ -13,7 +12,6 @@ public class State {
     @Column("list")
     private List<SkillStatus> list;
 
-    // Constructors
     public State() {}
 
     public State(Integer durationLeft, List<SkillStatus> list) {
@@ -21,7 +19,6 @@ public class State {
         this.list = list;
     }
 
-    // Getters and Setters
     public Integer getDurationLeft() {
         return durationLeft;
     }

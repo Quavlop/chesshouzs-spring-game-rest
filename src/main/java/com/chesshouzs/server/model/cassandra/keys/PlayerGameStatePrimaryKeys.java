@@ -1,15 +1,17 @@
 package com.chesshouzs.server.model.cassandra.keys;
 
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyClass;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 
 @PrimaryKeyClass
 public class PlayerGameStatePrimaryKeys {
 
-    @Column("player_id")
+    @PrimaryKeyColumn(name = "player_id", type = PrimaryKeyType.PARTITIONED)
     private String playerId;
 
-    @Column("game_id")
+    @PrimaryKeyColumn(name = "game_id", type = PrimaryKeyType.CLUSTERED)
     private String gameId;
 
     public PlayerGameStatePrimaryKeys(String playerId, String gameId) {

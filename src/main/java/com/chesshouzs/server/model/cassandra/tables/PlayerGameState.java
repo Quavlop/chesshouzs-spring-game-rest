@@ -5,8 +5,13 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import com.chesshouzs.server.model.cassandra.keys.PlayerGameStatePrimaryKeys;
 import com.chesshouzs.server.model.cassandra.types.State;
 
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+// import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+// import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
+
 import java.util.Map;
 
 @Table("player_game_states")

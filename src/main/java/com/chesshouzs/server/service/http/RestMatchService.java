@@ -162,4 +162,26 @@ public class RestMatchService {
         
         return res.get();
     }
+
+    public PlayerGameState GetOpponentStatus(UUID userId) throws Exception {
+        GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
+        if (matchData == null){
+            return null;
+        }
+
+        UUID opponentId;
+        if (userId.equals(matchData.getWhitePlayer().getId())){
+            opponentId = matchData.getBlackPlayer().getId();
+        } else {
+            opponentId = matchData.getWhitePlayer().getId();
+        }
+
+        PlayerGameStatePrimaryKeys keys = new PlayerGameStatePrimaryKeys(opponentId.toString(), matchData.getId().toString());
+        Optional<PlayerGameState> res = playerGameStateCassandraRepository.findById(keys);
+        if (res == null){
+            return null;
+        }
+        
+        return res.get();
+    }
 }

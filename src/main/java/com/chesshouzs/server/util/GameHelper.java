@@ -1,5 +1,7 @@
 package com.chesshouzs.server.util;
 
+import com.chesshouzs.server.constants.GameConstants;
+
 public class GameHelper {
 
     public static String GameDurationToString(int duration, int increment) {
@@ -30,6 +32,13 @@ public class GameHelper {
             sb.append(new String(row)).append("|");
         }
         return sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
+    }
+
+    public static String getPieceColor(char character){
+        if (Character.toUpperCase(character) == character){
+            return GameConstants.WHITE_COLOR;
+        }
+        return GameConstants.BLACK_COLOR;
     }
     
 }

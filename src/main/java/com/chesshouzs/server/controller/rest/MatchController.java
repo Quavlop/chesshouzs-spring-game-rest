@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chesshouzs.server.config.queue.KafkaMessageProducer;
@@ -64,12 +65,17 @@ public class MatchController {
     }
 
     @GetMapping("/player/status")
-    public ResponseEntity<Response> GetPlayerStatus(@AuthenticationPrincipal Users user) throws Exception {
-        PlayerGameState res = restMatchService.GetPlayerStatus(user.getId()); 
+    public ResponseEntity<Response> GetPlayerStatus(@AuthenticationPrincipal Users user, @RequestParam(name = "isOpponent", required = true) Integer isOpponent) throws Exception {
+        PlayerGameState res;
+        if (isOpponent == 1){
+            res = restMatchService.GetOpponentStatus(user.getId()); 
+        } else {
+            res = restMatchService.GetPlayerStatus(user.getId()); 
+        }
+
         if (res == null) {
             throw new Exception("Failed to get player skill status");
         }
-        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully retrieved game type data.", null), HttpStatus.OK);
-
+        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully retrieved game type data.", res), HttpStatus.OK);
     }
 }
