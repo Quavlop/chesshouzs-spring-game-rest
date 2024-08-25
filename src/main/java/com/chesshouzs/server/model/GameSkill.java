@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.chesshouzs.server.dto.GameActiveDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,8 +24,8 @@ public class GameSkill implements ModelInterface<GameSkill, PlayerSkillDataCount
     private String description; 
     private Boolean forSelf; 
     private Boolean forEnemy; 
-    private Integer radiusX; 
-    private Integer radiusY; 
+    @Column(name = "radius_x") private Integer radiusX; 
+    @Column(name = "radius_y") private Integer radiusY; 
     private Boolean autoTrigger; 
     private Integer duration; 
     private Integer usageCount;

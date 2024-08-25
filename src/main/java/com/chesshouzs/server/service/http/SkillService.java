@@ -102,12 +102,16 @@ public class SkillService {
             throw new Exception("Skill cannot be used on non-empty square");
         }
 
-        if (position.getRow() < skill.getRowLimit() || position.getRow() > state.length - skill.getRowLimit() - 1){
-            throw new Exception("Invalid wall position");
+        if (skill.getRowLimit() != null){
+            if (position.getRow() < skill.getRowLimit() || position.getRow() > state.length - skill.getRowLimit() - 1){
+                throw new Exception("Invalid wall position");
+            }
         }
 
-        if (position.getCol() < skill.getColLimit() || position.getCol() > state.length - skill.getColLimit() - 1){
-            throw new Exception("Invalid wall position");
+        if (skill.getColLimit() != null){
+            if (position.getCol() < skill.getColLimit() || position.getCol() > state.length - skill.getColLimit() - 1){
+                throw new Exception("Invalid wall position");
+            }
         }
 
         state[position.getRow()][position.getCol()] = GameConstants.NONCHARACTER_WALL;
@@ -117,8 +121,22 @@ public class SkillService {
         return new ExecuteSkillMessage(newNotation, params.getGameId(), userId, params.getSkillId());
     }
 
-    public ExecuteSkillMessage executeFogMaster(UUID userId, ExecuteSkillReqDto params, GameSkill skill){
-        return new ExecuteSkillMessage(null, userId, userId, null);
+    public ExecuteSkillMessage executeFogMaster(UUID userId, ExecuteSkillReqDto params, GameSkill skill) throws Exception{
+        GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
+        if (matchData == null){
+            throw new Exception("Match data not found");
+        }
+
+        String key = RedisConstants.getGameMoveKey(matchData.getMovesCacheRef());
+        Map<String, String> notation = redis.hgetall(key);
+        if (notation == null){
+            throw new Exception("Match state not found");
+        }
+
+        PositionDto position = params.getPosition();
+        SkillPosition executionPosition = new SkillPosition(position.getRow(), position.getCol());
+
+        return new ExecuteSkillMessage(params.getState(), params.getGameId(), userId, params.getSkillId(), executionPosition);
     }
 
     public ExecuteSkillMessage executeFreezingWand(UUID userId, ExecuteSkillReqDto params, GameSkill skill) throws Exception {
