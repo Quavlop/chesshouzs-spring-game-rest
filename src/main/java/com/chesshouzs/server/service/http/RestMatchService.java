@@ -74,6 +74,7 @@ public class RestMatchService {
 
         result.setGameNotation(notation.get("move"));
         String turn = notation.get("turn");
+        System.out.println("WKWKWKKWKWKWKWWKKWWKWK FARREL " + turn);
         if (turn == "1"){
             result.setTurn(GameConstants.WHITE_COLOR);
         } else {
