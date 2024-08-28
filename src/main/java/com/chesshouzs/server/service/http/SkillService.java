@@ -61,7 +61,7 @@ public class SkillService {
         PositionDto position = params.getPosition();
         char[][] state = GameHelper.convertNotationToArray(params.getState());
 
-        if (turn == "1") {
+        if (turn.equals("1")) {
             if (state[position.getRow()][position.getCol()] != GameConstants.WHITE_CHARACTER_PAWN){
                 throw new Exception("Invalid character");
             }
@@ -71,7 +71,7 @@ public class SkillService {
             }
         }
 
-        if (turn == "1"){
+        if (turn.equals("1")){
             state[position.getRow()][position.getCol()] = GameConstants.WHITE_CHARACTER_EVOLVED_PAWN;
         } else {
             state[position.getRow()][position.getCol()] = GameConstants.BLACK_CHARACTER_EVOLVED_PAWN;
