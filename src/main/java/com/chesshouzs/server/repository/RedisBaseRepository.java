@@ -34,4 +34,8 @@ public class RedisBaseRepository {
         List<String> values = hashOperations.multiGet(key, fields);
         return fields.stream().collect(Collectors.toMap(field -> field, field -> values.get(fields.indexOf(field))));
     }
+
+    public Long del(List<String> keys) {
+        return redisTemplate.delete(keys);
+    }
 }

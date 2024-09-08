@@ -1,5 +1,7 @@
 package com.chesshouzs.server.util;
 
+import java.util.UUID;
+
 import com.chesshouzs.server.constants.GameConstants;
 
 public class GameHelper {
@@ -39,6 +41,14 @@ public class GameHelper {
             return GameConstants.WHITE_COLOR;
         }
         return GameConstants.BLACK_COLOR;
+    }
+
+    public static String getRedisGameMoveKey(String ref){
+        return "game_move:" + ref;
+    }
+
+    public static String getRedisPlayerMatchSkillKey(UUID playerId){
+        return "player_match_skill:" + playerId.toString();
     }
     
 }

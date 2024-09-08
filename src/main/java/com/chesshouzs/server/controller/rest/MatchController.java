@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.chesshouzs.server.config.queue.KafkaMessageProducer;
 import com.chesshouzs.server.constants.KafkaConstants;
 import com.chesshouzs.server.dto.GameActiveDto;
+import com.chesshouzs.server.dto.custom.match.EndGameDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
 import com.chesshouzs.server.dto.request.ExecuteSkillReqDto;
 import com.chesshouzs.server.dto.response.ExecuteSkillResDto;
@@ -77,5 +78,15 @@ public class MatchController {
             throw new Exception("Failed to get player skill status");
         }
         return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully retrieved game type data.", res), HttpStatus.OK);
+    }
+
+    @PostMapping("/end/{game_id}")
+    public ResponseEntity<Response> EndMatch(@AuthenticationPrincipal Users user, @PathVariable("game_id") UUID gameId, @RequestBody EndGameDto params) throws Exception{
+        params.setGameId(gameId);
+        boolean res = restMatchService.EndGame(user.getId(), params);
+        if (!res){
+            throw new Exception("Failed to fulfill end game request");
+        }
+        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "End game request fulfilled successfully.", null), HttpStatus.OK);
     }
 }

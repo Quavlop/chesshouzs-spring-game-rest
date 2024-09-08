@@ -6,13 +6,18 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.Map;
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.chesshouzs.server.config.queue.KafkaMessageProducer;
 import com.chesshouzs.server.config.queue.KafkaMessageWrapper;
@@ -20,19 +25,24 @@ import com.chesshouzs.server.constants.GameConstants;
 import com.chesshouzs.server.constants.KafkaConstants;
 import com.chesshouzs.server.constants.RedisConstants;
 import com.chesshouzs.server.dto.GameActiveDto;
+import com.chesshouzs.server.dto.custom.match.EndGameDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
+import com.chesshouzs.server.dto.kafka.EndGameMessage;
 import com.chesshouzs.server.dto.kafka.ExecuteSkillMessage;
 import com.chesshouzs.server.dto.request.ExecuteSkillReqDto;
 import com.chesshouzs.server.dto.response.ExecuteSkillResDto;
 import com.chesshouzs.server.model.GameActive;
 import com.chesshouzs.server.model.GameSkill;
+import com.chesshouzs.server.model.Users;
 import com.chesshouzs.server.model.cassandra.keys.PlayerGameStatePrimaryKeys;
 import com.chesshouzs.server.model.cassandra.tables.PlayerGameState;
 import com.chesshouzs.server.model.redis.GameMove;
 import com.chesshouzs.server.repository.GameActiveRepository;
 import com.chesshouzs.server.repository.GameSkillRepository;
 import com.chesshouzs.server.repository.RedisBaseRepository;
+import com.chesshouzs.server.repository.UsersRepository;
 import com.chesshouzs.server.repository.cassandra.PlayerGameStatesRepository;
+import com.chesshouzs.server.util.GameHelper;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
 import com.chesshouzs.server.constants.SkillConstants;
 
@@ -45,6 +55,9 @@ public class RestMatchService {
 
     @Autowired 
     private GameSkillRepository gameSkillRepository;
+
+    @Autowired 
+    private UsersRepository usersRepository;
 
     @Autowired 
     private RedisBaseRepository redis;
@@ -183,5 +196,90 @@ public class RestMatchService {
         }
         
         return res.get();
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public boolean EndGame(UUID userId, EndGameDto params) throws Exception {
+
+        // if (!userId.equals(params.getWinnerId())){
+        //     throw new Exception("Invalid actor");
+        // }
+        System.out.println(userId.toString());
+        System.out.println(params.getWinnerId());
+        System.out.println(params.getGameId().toString());
+        GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
+        if (matchData == null){
+            throw new Exception("Match data not found");
+        }
+
+        Users winner, loser; 
+        if (params.getWinnerId().equals(matchData.getWhitePlayer().getId())){
+            winner = matchData.getWhitePlayer();
+            loser = matchData.getBlackPlayer();
+        } else {
+            winner = matchData.getBlackPlayer();
+            loser = matchData.getWhitePlayer();
+        }
+
+        // change game_active status is_done to true 
+        matchData.setIsDone(true);
+        matchData.setEndTime(LocalDateTime.now());
+        gameActiveRepository.save(matchData);
+
+        // elo calculation & accumulation & save to database
+        double newWinnerElo = CalculatePostMatchElo(winner.getEloPoints(), loser.getEloPoints(), true);
+        double newLoserElo = CalculatePostMatchElo(loser.getEloPoints(), winner.getEloPoints(), false);
+
+        winner.setEloPoints((int)newWinnerElo);
+        usersRepository.save(winner);
+
+        loser.setEloPoints((int)newLoserElo);
+        usersRepository.save(loser);
+        
+        // delete player_match_skill redis key on enemy and winner
+        // delete game_move for the respective match
+        List<String> redisKeys = Arrays.asList(
+            GameHelper.getRedisGameMoveKey(matchData.getMovesCacheRef()), 
+            GameHelper.getRedisPlayerMatchSkillKey(winner.getId()), 
+            GameHelper.getRedisPlayerMatchSkillKey(loser.getId())
+        );
+        try {
+            Long res = redis.del(redisKeys);
+            if (res == null){
+                throw new Exception("Failed to delete redis records");
+            }
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+        // delete player_game_states movement data on cassandra
+        PlayerGameStatePrimaryKeys winnerSkillStateKey = new PlayerGameStatePrimaryKeys(winner.getId().toString(), params.getGameId().toString());
+        PlayerGameStatePrimaryKeys loserSkillStateKey = new PlayerGameStatePrimaryKeys(loser.getId().toString(), params.getGameId().toString());
+
+        try {
+            playerGameStateCassandraRepository.deleteById(winnerSkillStateKey);
+            playerGameStateCassandraRepository.deleteById(loserSkillStateKey);
+
+            if (playerGameStateCassandraRepository.existsById(winnerSkillStateKey) || playerGameStateCassandraRepository.existsById(loserSkillStateKey)){
+                throw new Exception("Failed to delete records");
+            }
+
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+        // publish event to websocket server
+        EndGameMessage message = new EndGameMessage(winner.getId(), loser.getId(), newWinnerElo, newLoserElo, params.getType());
+        messageProducer.publish(KafkaConstants.TOPIC_END_GAME, params.getGameId().toString(), message);
+
+        return true; 
+    }
+
+    public double CalculatePostMatchElo(Integer elo, Integer enemyElo,boolean win){
+        double expectation = 1.0 / (1.0 + Math.pow(10, (enemyElo - elo) / 400.0));
+        if (win){
+            return Math.max(elo + GameConstants.ELO_CALC_K_FACTOR * (1 + expectation), 0);
+        }
+        return Math.max(elo + GameConstants.ELO_CALC_K_FACTOR * (1 - expectation), 0);
     }
 }

@@ -45,7 +45,7 @@ public class GameActive implements ModelInterface<GameActive, GameActiveDto>{
     private Users blackPlayer; 
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="winner_player_id", nullable = false)
+    @JoinColumn(name="winner_player_id", nullable = true)
     @JsonBackReference
     private Users winnerPlayer; 
 

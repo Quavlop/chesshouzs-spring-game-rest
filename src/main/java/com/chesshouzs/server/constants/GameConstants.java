@@ -23,4 +23,14 @@ public class GameConstants {
 	public static char BLACK_CHARACTER_BISHOP = 'b';
 	public static char BLACK_CHARACTER_ROOK = 'r';
 	public static char BLACK_CHARACTER_EVOLVED_PAWN = 'e';
+
+	public static String END_GAME_CHECKMATE_TYPE = "CHECKMATE"; 
+	public static String END_GAME_RESIGN_TYPE = "RESIGN";
+	public static String END_GAME_STALEMATE_TYPE= "STALEMATE";
+	public static String END_GAME_DRAW_TYPE= "DRAW";
+
+
+
+	public static Integer ELO_CALC_K_FACTOR = 20;
+
 }
