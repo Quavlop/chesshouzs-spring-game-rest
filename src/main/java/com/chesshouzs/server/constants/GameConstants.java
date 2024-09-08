@@ -28,6 +28,7 @@ public class GameConstants {
 	public static String END_GAME_RESIGN_TYPE = "RESIGN";
 	public static String END_GAME_STALEMATE_TYPE= "STALEMATE";
 	public static String END_GAME_DRAW_TYPE= "DRAW";
+	public static String END_GAME_TIMEOUT_TYPE = "TIMEOUT";
 
 
 

@@ -45,6 +45,7 @@ import com.chesshouzs.server.repository.cassandra.PlayerGameStatesRepository;
 import com.chesshouzs.server.util.GameHelper;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
 import com.chesshouzs.server.constants.SkillConstants;
+import com.chesshouzs.server.util.utils.game.*;
 
 
 @Service
@@ -227,8 +228,15 @@ public class RestMatchService {
         gameActiveRepository.save(matchData);
 
         // elo calculation & accumulation & save to database
-        double newWinnerElo = CalculatePostMatchElo(winner.getEloPoints(), loser.getEloPoints(), true);
-        double newLoserElo = CalculatePostMatchElo(loser.getEloPoints(), winner.getEloPoints(), false);
+        // TODO : this one and similar errors should be 422
+        Elo eloCalculatorInstance = GetCalculationType(params.getType()); 
+        if (eloCalculatorInstance == null){
+            throw new Exception("Invalid end game type reasoning");
+        }
+
+
+        double newWinnerElo = eloCalculatorInstance.CalculatePostMatchElo(winner.getEloPoints(), loser.getEloPoints(), true);
+        double newLoserElo = eloCalculatorInstance.CalculatePostMatchElo(loser.getEloPoints(), winner.getEloPoints(), false);
 
         winner.setEloPoints((int)newWinnerElo);
         usersRepository.save(winner);
@@ -275,11 +283,27 @@ public class RestMatchService {
         return true; 
     }
 
-    public double CalculatePostMatchElo(Integer elo, Integer enemyElo,boolean win){
-        double expectation = 1.0 / (1.0 + Math.pow(10, (enemyElo - elo) / 400.0));
-        if (win){
-            return Math.max(elo + GameConstants.ELO_CALC_K_FACTOR * (1 + expectation), 0);
+    public Elo GetCalculationType(String type){
+        if (type == GameConstants.END_GAME_CHECKMATE_TYPE){
+            return new CheckmateElo();
+        } 
+
+        if (type == GameConstants.END_GAME_RESIGN_TYPE){
+            return new ResignElo();
         }
-        return Math.max(elo + GameConstants.ELO_CALC_K_FACTOR * (1 - expectation), 0);
+
+        if (type == GameConstants.END_GAME_STALEMATE_TYPE){
+            return new StalemateElo();
+        }
+
+        if (type == GameConstants.END_GAME_DRAW_TYPE){
+            return new DrawElo();
+        }
+
+        if (type == GameConstants.END_GAME_TIMEOUT_TYPE){
+            return new TimeoutElo();
+        }
+
+        return null;
     }
 }
