@@ -284,23 +284,23 @@ public class RestMatchService {
     }
 
     public Elo GetCalculationType(String type){
-        if (type == GameConstants.END_GAME_CHECKMATE_TYPE){
+        if (type.equals(GameConstants.END_GAME_CHECKMATE_TYPE)){
             return new CheckmateElo();
         } 
 
-        if (type == GameConstants.END_GAME_RESIGN_TYPE){
+        if (type.equals(GameConstants.END_GAME_RESIGN_TYPE)){
             return new ResignElo();
         }
 
-        if (type == GameConstants.END_GAME_STALEMATE_TYPE){
+        if (type.equals(GameConstants.END_GAME_STALEMATE_TYPE)){
             return new StalemateElo();
         }
 
-        if (type == GameConstants.END_GAME_DRAW_TYPE){
+        if (type.equals(GameConstants.END_GAME_DRAW_TYPE)){
             return new DrawElo();
         }
 
-        if (type == GameConstants.END_GAME_TIMEOUT_TYPE){
+        if (type.equals(GameConstants.END_GAME_TIMEOUT_TYPE)){
             return new TimeoutElo();
         }
 
