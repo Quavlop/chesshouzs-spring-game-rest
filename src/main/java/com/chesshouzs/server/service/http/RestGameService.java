@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.chesshouzs.server.dto.GameTypesDto;
 import com.chesshouzs.server.repository.GameTypeRepository;
+import com.chesshouzs.server.repository.GameActiveRepository;
+import com.chesshouzs.server.model.GameActive;
 import com.chesshouzs.server.model.GameType;
 
 
@@ -21,6 +24,10 @@ public class RestGameService implements GameServiceInterface{
 
     @Autowired
     public GameTypeRepository gameTypeRepository;
+
+    @Autowired
+    public GameActiveRepository gameActiveRepository;
+
     
     public List<GameTypesDto> GetGameTypes(){
 

@@ -306,4 +306,12 @@ public class RestMatchService {
 
         return null;
     }
+
+    public String IsPlayerInActiveGame(UUID userId){
+        GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
+        if (matchData == null){
+            return null;
+        }
+        return matchData.getId().toString();
+    }
 }

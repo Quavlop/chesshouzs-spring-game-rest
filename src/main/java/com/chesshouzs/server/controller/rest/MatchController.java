@@ -37,6 +37,13 @@ public class MatchController {
     @Autowired
     private RestMatchService restMatchService;
 
+
+    @GetMapping("/player/check")
+    public ResponseEntity<Response> CheckInGamePlayerStatus(@AuthenticationPrincipal Users user){
+        String res =  restMatchService.IsPlayerInActiveGame(user.getId());
+        return new ResponseEntity<>(new Response(HttpServletResponse.SC_OK, "Successfully check player active game status.", res), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<Response> GetMatchData(@AuthenticationPrincipal Users user){
         GameActiveDto res = restMatchService.GetMatchData(user.getId()); 
