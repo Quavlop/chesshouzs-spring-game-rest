@@ -34,4 +34,12 @@ public class GameConstants {
 
 	public static Integer ELO_CALC_K_FACTOR = 20;
 
+	public static String KEY_VALID_MOVE = "valid_move";
+	public static String KEY_CHARACTER = "character";
+	public static String KEY_IS_DOUBLE = "is_double";
+	public static String KEY_COLOR = "color";
+	public static String KEY_VALID = "valid";
+	
+
+
 }
