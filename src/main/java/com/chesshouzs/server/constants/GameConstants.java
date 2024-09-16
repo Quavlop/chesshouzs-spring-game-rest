@@ -39,7 +39,14 @@ public class GameConstants {
 	public static String KEY_IS_DOUBLE = "is_double";
 	public static String KEY_COLOR = "color";
 	public static String KEY_VALID = "valid";
+
+	public static String KEY_OLD_POSITION = "old_position";
+	public static String KEY_NEW_POSITION = "new_position";
+
+	public static String KEY_IS_IN_CHECK = "is_in_check"; 
+	public static String KEY_ATTACKERS = "attackers"; 
+	public static String KEY_INVALID_MOVES = "invalid_moves";
+	public static String KEY_VALID_MOVES = "valid_moves";
+
 	
-
-
 }

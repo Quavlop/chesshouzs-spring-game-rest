@@ -49,8 +49,7 @@ public class RpcMatchService extends MatchServiceGrpc.MatchServiceImplBase {
                                 - new move must kill the attacker OR block the attack
         */
 
-        // TODO : pass the rpc params (the new state) (make struct corresponding to the above param)
-        Boolean isValid = rpcGameModule.validateMovement("");
+        Boolean isValid = rpcGameModule.validateMovement(request.getOldState(),request.getNewState());
 
         // setup response
         ValidateMoveResp response = ValidateMoveResp.newBuilder()

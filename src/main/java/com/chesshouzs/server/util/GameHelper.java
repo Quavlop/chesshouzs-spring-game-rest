@@ -66,39 +66,39 @@ public class GameHelper {
     }
 
     public static com.chesshouzs.server.service.lib.interfaces.Character map(char ch){
-        Map<String, Object> pawn = pawnCheck(ch);
-        if ((Boolean)pawn.get(GameConstants.KEY_VALID)){
-            return new com.chesshouzs.server.service.lib.game.Pawn();
+        String pawnColor = getPawnColor(ch);
+        if (pawnColor != null){
+            return new com.chesshouzs.server.service.lib.game.Pawn(pawnColor);
         }
 
-        Map<String, Object> knight = knightCheck(ch);
-        if ((Boolean)knight.get(GameConstants.KEY_VALID)){
-            return new com.chesshouzs.server.service.lib.game.Knight();
+        String knightColor = getKnightColor(ch);
+        if (knightColor != null){
+            return new com.chesshouzs.server.service.lib.game.Knight(knightColor);
         }
 
-        Map<String, Object> king = kingCheck(ch);
-        if ((Boolean)king.get(GameConstants.KEY_VALID)){
-            return new com.chesshouzs.server.service.lib.game.King();
+        String kingColor = getKingColor(ch);
+        if (kingColor != null){
+            return new com.chesshouzs.server.service.lib.game.King(kingColor);
         }
 
-        Map<String, Object> queen = queenCheck(ch);
-        if ((Boolean)queen.get(GameConstants.KEY_VALID)){
-            return new com.chesshouzs.server.service.lib.game.Queen();
+        String queenColor = getQueenColor(ch);
+        if (queenColor != null){
+            return new com.chesshouzs.server.service.lib.game.Queen(queenColor);
         }
 
-        Map<String, Object> bishop = bishopCheck(ch);
-        if ((Boolean)bishop.get(GameConstants.KEY_VALID)){
-            return new com.chesshouzs.server.service.lib.game.Bishop();
+        String bishopColor = getBishopColor(ch);
+        if (bishopColor != null){
+            return new com.chesshouzs.server.service.lib.game.Bishop(bishopColor);
         }
 
-        Map<String, Object> rook = rookCheck(ch);
-        if ((Boolean)rook.get(GameConstants.KEY_VALID)){
-            return new com.chesshouzs.server.service.lib.game.Rook();
+        String rookColor = getRookColor(ch);
+        if (rookColor != null){
+            return new com.chesshouzs.server.service.lib.game.Rook(rookColor);
         }
 
-        Map<String, Object> evolvedPawn = evolvedPawnCheck(ch);
-        if ((Boolean)evolvedPawn.get(GameConstants.KEY_VALID)){
-            return new com.chesshouzs.server.service.lib.game.EvolvedPawn();
+        String evolvedPawnColor = getEvolvedPawnColor(ch);
+        if (evolvedPawnColor != null){
+            return new com.chesshouzs.server.service.lib.game.EvolvedPawn(evolvedPawnColor);
         }
 
         return null;
@@ -106,109 +106,127 @@ public class GameHelper {
 
     /*
         returns {
-            color : [String], 
-            valid : [Boolean]
+            color : [String]
         }
      */
-    public static Map<String, Object> pawnCheck(char ch){
-        Map<String, Object> data = new HashMap<String, Object>();
-
-        data.put(GameConstants.KEY_VALID, ch == GameConstants.WHITE_CHARACTER_PAWN || ch == GameConstants.BLACK_CHARACTER_PAWN);
-        data.put(GameConstants.KEY_COLOR, getPieceColor(ch));
-
-        return data;
+    public static String getPawnColor(char ch){
+        if (!isCharPawn(ch)){
+            return null;
+        }
+        return getPieceColor(ch);
     }
 
     /*
         returns {
-            color : [String], 
-            valid : [Boolean]
+            color : [String]
         }
      */
-    public static Map<String, Object> kingCheck(char ch){
-        Map<String, Object> data = new HashMap<String, Object>();
-
-        data.put(GameConstants.KEY_VALID, ch == GameConstants.WHITE_CHARACTER_KING || ch == GameConstants.BLACK_CHARACTER_KING);
-        data.put(GameConstants.KEY_COLOR, getPieceColor(ch));
-
-        return data;
+    public static String getKingColor(char ch){
+        if (!isCharKing(ch)){
+            return null;
+        }
+        return getPieceColor(ch);
     }
 
     /*
         returns {
-            color : [String], 
-            valid : [Boolean]
+            color : [String]
         }
      */
-    public static Map<String, Object> evolvedPawnCheck(char ch){
-        Map<String, Object> data = new HashMap<String, Object>();
-
-        data.put(GameConstants.KEY_VALID, ch == GameConstants.WHITE_CHARACTER_EVOLVED_PAWN || ch == GameConstants.BLACK_CHARACTER_EVOLVED_PAWN);
-        data.put(GameConstants.KEY_COLOR, getPieceColor(ch));
-
-        return data;
+    public static String getEvolvedPawnColor(char ch){
+        if (!isCharEvolvedPawn(ch)){
+            return null;
+        }
+        return getPieceColor(ch);
     }    
 
     /*
         returns {
-            color : [String], 
-            valid : [Boolean]
+            color : [String]
         }
      */
-    public static Map<String, Object> knightCheck(char ch){
-        Map<String, Object> data = new HashMap<String, Object>();
-
-        data.put(GameConstants.KEY_VALID, ch == GameConstants.WHITE_CHARACTER_KNIGHT || ch == GameConstants.BLACK_CHARACTER_KNIGHT);
-        data.put(GameConstants.KEY_COLOR, getPieceColor(ch));
-
-        return data;
+    public static String getKnightColor(char ch){
+        if (!isCharKnight(ch)){
+            return null;
+        }
+        return getPieceColor(ch);
     }
 
     /*
         returns {
-            color : [String], 
-            valid : [Boolean]
+            color : [String]
         }
      */
-    public static Map<String, Object> queenCheck(char ch){
-        Map<String, Object> data = new HashMap<String, Object>();
-
-        data.put(GameConstants.KEY_VALID, ch == GameConstants.WHITE_CHARACTER_QUEEN || ch == GameConstants.BLACK_CHARACTER_QUEEN);
-        data.put(GameConstants.KEY_COLOR, getPieceColor(ch));
-
-        return data;
+    public static String getQueenColor(char ch){
+        if (!isCharQueen(ch)){
+            return null;
+        }
+        return getPieceColor(ch);
     }
     
     /*
         returns {
-            color : [String], 
-            valid : [Boolean]
+            color : [String]
         }
      */
-    public static Map<String, Object> bishopCheck(char ch){
-        Map<String, Object> data = new HashMap<String, Object>();
-
-        data.put(GameConstants.KEY_VALID, ch == GameConstants.WHITE_CHARACTER_BISHOP || ch == GameConstants.BLACK_CHARACTER_BISHOP);
-        data.put(GameConstants.KEY_COLOR, getPieceColor(ch));
-
-        return data;
+    public static String getBishopColor(char ch){
+        if (!isCharBishop(ch)){
+            return null;
+        }
+        return getPieceColor(ch);
     }    
 
     /*
         returns {
-            color : [String], 
-            valid : [Boolean]
+            color : [String]
         }
      */
-    public static Map<String, Object> rookCheck(char ch){
-        Map<String, Object> data = new HashMap<String, Object>();
-
-        data.put(GameConstants.KEY_VALID, ch == GameConstants.WHITE_CHARACTER_ROOK || ch == GameConstants.BLACK_CHARACTER_ROOK);
-        data.put(GameConstants.KEY_COLOR, getPieceColor(ch));
-
-        return data;
+    public static String getRookColor(char ch){
+        if (!isCharRook(ch)){
+            return null;
+        }
+        return getPieceColor(ch);
     }    
 
+    public static Boolean isCharKing(char ch){
+        return ch == GameConstants.WHITE_CHARACTER_KING || ch == GameConstants.BLACK_CHARACTER_KING;
+    }
+
+    public static Boolean isCharQueen(char ch){
+        return ch == GameConstants.WHITE_CHARACTER_QUEEN || ch == GameConstants.BLACK_CHARACTER_QUEEN;
+    }
+
+    public static Boolean isCharPawn(char ch){
+        return ch == GameConstants.WHITE_CHARACTER_PAWN || ch == GameConstants.BLACK_CHARACTER_PAWN;
+    }
+
+    public static Boolean isCharKnight(char ch){
+        return ch == GameConstants.WHITE_CHARACTER_KNIGHT || ch == GameConstants.BLACK_CHARACTER_KNIGHT;
+    }
+
+    public static Boolean isCharBishop(char ch){
+        return ch == GameConstants.WHITE_CHARACTER_BISHOP || ch == GameConstants.BLACK_CHARACTER_BISHOP;
+    }
+
+    public static Boolean isCharRook(char ch){
+        return ch == GameConstants.WHITE_CHARACTER_ROOK || ch == GameConstants.BLACK_CHARACTER_ROOK;
+    }
+
+    public static Boolean isCharEvolvedPawn(char ch){
+        return ch == GameConstants.WHITE_CHARACTER_EVOLVED_PAWN || ch == GameConstants.BLACK_CHARACTER_EVOLVED_PAWN;
+    }
+
+    public static Boolean isWall(char ch){
+        return ch == GameConstants.NONCHARACTER_WALL;
+    }
+
+    public static Boolean getDiagonalAttackers(char ch, String playerColor){
+        return getQueenColor(ch) != playerColor || getBishopColor(ch) != playerColor;
+    }
+
+    public static Boolean getFlatDirectionAttackers(char ch, String playerColor){
+        return getQueenColor(ch) != playerColor || getRookColor(ch) != playerColor;
+    }
 
     public static String getRedisGameMoveKey(String ref){
         return "game_move:" + ref;

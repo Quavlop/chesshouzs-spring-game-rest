@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chesshouzs.server.constants.GameConstants;
+import com.chesshouzs.server.dto.custom.match.PositionDto;
 import com.chesshouzs.server.service.lib.interfaces.Character;
 import com.chesshouzs.server.util.GameHelper;
 import com.chesshouzs.server.util.Helper;
@@ -18,6 +19,8 @@ public class Game {
         returns {
             valid_move : [Boolean]
             character : [Character.class]
+            old_position : [PositionDto.class]
+            new_position : [PositionDto.class]
         }
     */
     public static Map<String, Object> getMovementData(char[][] oldState, char[][] newState){
@@ -34,8 +37,15 @@ public class Game {
 
         // map to corresponding class object
         char movingChar = (char)doubleMovementScanResult.get(GameConstants.KEY_CHARACTER);
+
+        // map and set the position (color has been set from map)
         Character characterObj = GameHelper.map(movingChar);
+        characterObj.setPosition((PositionDto)doubleMovementScanResult.get(GameConstants.KEY_NEW_POSITION));
+
         data.put(GameConstants.KEY_CHARACTER, characterObj);
+        data.put(GameConstants.KEY_OLD_POSITION, doubleMovementScanResult.get(GameConstants.KEY_OLD_POSITION));
+        data.put(GameConstants.KEY_NEW_POSITION, doubleMovementScanResult.get(GameConstants.KEY_NEW_POSITION));
+
     
         return data;
     }
@@ -44,6 +54,9 @@ public class Game {
         returns {   
             is_double : [Boolean]
             character : [char]
+            old_position : [PositionDto.class]
+            new_position : [PositionDto.class]
+
         }
      */
     public static Map<String, Object> doubleMovementScanResult(char[][] oldState, char[][] newState){
@@ -62,7 +75,16 @@ public class Game {
                             data.put(GameConstants.KEY_IS_DOUBLE, true);
                             return data;
                         }
-                        movingChar = oldState[row][col];
+                        movingChar = newState[row][col];
+                        data.put(GameConstants.KEY_NEW_POSITION, new PositionDto(row, col));
+                    } 
+
+                    if (oldState[row][col] != GameConstants.NONCHARACTER_EMPTY && newState[row][col] == GameConstants.NONCHARACTER_EMPTY){
+                        if (data.get(GameConstants.KEY_OLD_POSITION) != null){
+                            data.put(GameConstants.KEY_IS_DOUBLE, true);
+                            return data;
+                        }
+                        data.put(GameConstants.KEY_OLD_POSITION, new PositionDto(row, col));
                     }
                 }
             }
