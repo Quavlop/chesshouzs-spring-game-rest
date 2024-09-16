@@ -3,6 +3,8 @@ package com.chesshouzs.server.service.rpc.module;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.springframework.context.annotation.Configuration;
+
 import com.chesshouzs.server.constants.GameConstants;
 import com.chesshouzs.server.dto.custom.match.PositionDto;
 import com.chesshouzs.server.service.lib.game.King;
@@ -12,7 +14,7 @@ import com.chesshouzs.server.service.lib.usecase.Game;
 import com.chesshouzs.server.util.GameHelper;
 import com.datastax.oss.driver.shaded.guava.common.collect.Table;
 
-
+@Configuration
 public class RpcGameModule {
 
     
