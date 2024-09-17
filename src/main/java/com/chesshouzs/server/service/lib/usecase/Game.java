@@ -37,6 +37,7 @@ public class Game {
 
         // map to corresponding class object
         char movingChar = (char)doubleMovementScanResult.get(GameConstants.KEY_CHARACTER);
+        System.out.println(movingChar + " KWK");
 
         // map and set the position (color has been set from map)
         Character characterObj = GameHelper.map(movingChar);
@@ -70,7 +71,7 @@ public class Game {
         for (int row = 0; row < boardSize; row++){
             for (int col = 0; col < boardSize; col++){
                 if (oldState[row][col] != newState[row][col]){
-                    if (oldState[row][col] == GameConstants.NONCHARACTER_EMPTY && newState[row][col] != GameConstants.NONCHARACTER_EMPTY){
+                    if (oldState[row][col] != GameConstants.NONCHARACTER_WALL && newState[row][col] != GameConstants.NONCHARACTER_EMPTY){
                         if (!Helper.isCharEmpty(movingChar)){
                             data.put(GameConstants.KEY_IS_DOUBLE, true);
                             data.put(GameConstants.KEY_NEW_POSITION, null);

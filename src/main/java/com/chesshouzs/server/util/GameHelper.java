@@ -39,6 +39,9 @@ public class GameHelper {
     }
 
     public static String getPieceColor(char character){
+        if (character == GameConstants.NONCHARACTER_EMPTY || character == GameConstants.NONCHARACTER_WALL){
+            return null;
+        }
         if (Character.toUpperCase(character) == character){
             return GameConstants.WHITE_COLOR;
         }

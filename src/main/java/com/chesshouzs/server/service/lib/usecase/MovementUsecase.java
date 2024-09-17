@@ -55,7 +55,7 @@ public class MovementUsecase {
         }
 
         int diff = oldPosition.getRow() - newPosition.getRow();
-        return diff <= step && diff > 0;
+        return diff <= step && diff > 0 && oldPosition.getCol() == newPosition.getCol();
     }
 
     public static Boolean pawnKillMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){

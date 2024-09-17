@@ -2,6 +2,7 @@ package com.chesshouzs.server.service.lib.game;
 
 import com.chesshouzs.server.service.lib.interfaces.Character;
 import com.chesshouzs.server.service.lib.usecase.MovementUsecase;
+import com.chesshouzs.server.util.GameHelper;
 import com.datastax.oss.driver.shaded.guava.common.collect.Table;
 import com.chesshouzs.server.dto.custom.match.PositionDto;
 
@@ -21,7 +22,10 @@ public class Pawn extends Character{
     }
 
     public Boolean isValidMove(PositionDto oldPosition, char[][] oldState, char[][] newState){
-        return MovementUsecase.pawnForwardMovementValidator(oldPosition, this.position, oldState) || MovementUsecase.pawnKillMovementValidator(oldPosition, this.position, oldState);
+        String oldOccupiedBlockColor = GameHelper.getPieceColor(oldState[this.position.getRow()][this.position.getCol()]);
+        System.out.println(oldOccupiedBlockColor);
+        System.out.println(MovementUsecase.pawnForwardMovementValidator(oldPosition, this.position, oldState));
+        return MovementUsecase.pawnForwardMovementValidator(oldPosition, this.position, oldState) || (MovementUsecase.pawnKillMovementValidator(oldPosition, this.position, oldState) && oldOccupiedBlockColor != null && oldOccupiedBlockColor != this.color);
     }
 
     public Boolean isAbleToEliminateCheckThreat(Character attacker, PositionDto kingPosition, char[][] oldState){
