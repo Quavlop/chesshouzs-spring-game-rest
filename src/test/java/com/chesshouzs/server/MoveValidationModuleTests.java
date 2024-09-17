@@ -42,9 +42,53 @@ public class MoveValidationModuleTests {
                     put(GameConstants.KEY_IS_DOUBLE, false); 
                     put(GameConstants.KEY_CHARACTER, GameConstants.BLACK_CHARACTER_KING);
                     put(GameConstants.KEY_OLD_POSITION, new PositionDto(2, 0));
-                    put(GameConstants.KEY_NEW_POSITION, new PositionDto(0, 1));
+                    put(GameConstants.KEY_NEW_POSITION, new PositionDto(0, 0));
                 }}
-            ),             
+            ),    
+            new DoubleMovementScanResultTestSuite(
+                "POSITIVE CASE : single movement from lower board index to higher board index (2)", 
+                "...........R..|..R...........|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
+                "...........R..|..R...........|k.............|...........K.N|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, GameConstants.WHITE_CHARACTER_KNIGHT);
+                    put(GameConstants.KEY_OLD_POSITION, new PositionDto(2, 9));
+                    put(GameConstants.KEY_NEW_POSITION, new PositionDto(3, 13));
+                }}
+            ),              
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : double movement (1)", 
+                "...........R..|........R.....|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
+                "k..........R..|R.............|.........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : double movement (2)", 
+                "...........R..|..R...........|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
+                "k..........R..|..R...........|........N.....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),                               
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : double movement (3)", 
+                "...........R..|..R...........|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ), 
         };
 
         int countFail = 0;

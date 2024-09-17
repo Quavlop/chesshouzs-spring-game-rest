@@ -73,6 +73,9 @@ public class Game {
                     if (oldState[row][col] == GameConstants.NONCHARACTER_EMPTY && newState[row][col] != GameConstants.NONCHARACTER_EMPTY){
                         if (!Helper.isCharEmpty(movingChar)){
                             data.put(GameConstants.KEY_IS_DOUBLE, true);
+                            data.put(GameConstants.KEY_NEW_POSITION, null);
+                            data.put(GameConstants.KEY_OLD_POSITION, null);
+                            data.put(GameConstants.KEY_CHARACTER, '\u0000');
                             return data;
                         }
                         movingChar = newState[row][col];
@@ -82,6 +85,9 @@ public class Game {
                     if (oldState[row][col] != GameConstants.NONCHARACTER_EMPTY && newState[row][col] == GameConstants.NONCHARACTER_EMPTY){
                         if (data.get(GameConstants.KEY_OLD_POSITION) != null){
                             data.put(GameConstants.KEY_IS_DOUBLE, true);
+                            data.put(GameConstants.KEY_NEW_POSITION, null);
+                            data.put(GameConstants.KEY_OLD_POSITION, null);
+                            data.put(GameConstants.KEY_CHARACTER, '\u0000');                            
                             return data;
                         }
                         data.put(GameConstants.KEY_OLD_POSITION, new PositionDto(row, col));
