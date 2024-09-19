@@ -36,8 +36,19 @@ public class MovementUsecase {
     public static Boolean kingMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){
         int rowDiff = Math.abs(oldPosition.getRow() - newPosition.getRow());
         int colDiff = Math.abs(oldPosition.getCol() - newPosition.getCol());
+
+        String kingColor = GameHelper.getPieceColor(oldState[oldPosition.getRow()][oldPosition.getCol()]);
+        String replacedPosCharacterColor = GameHelper.getPieceColor(oldState[newPosition.getRow()][newPosition.getCol()]);
+
+        Boolean isKillingTeammate = (
+            kingColor == replacedPosCharacterColor
+            && kingColor != null && replacedPosCharacterColor != null
+        );
+
+        Boolean isOverridingWall = GameHelper.isWall(oldState[newPosition.getRow()][newPosition.getCol()]);
+
         return (diagonalMovementValidator(oldPosition, newPosition, oldState) || straightMovementValidator(oldPosition, newPosition, oldState))
-            && (rowDiff == 1 || colDiff == 1);
+            && (rowDiff == 1 || colDiff == 1) && !isKillingTeammate && !isOverridingWall;
     }
 
     public static Boolean knightShapeMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){

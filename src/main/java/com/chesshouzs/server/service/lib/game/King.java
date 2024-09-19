@@ -48,7 +48,7 @@ public class King extends Character{
     }
 
     public Boolean isValidMove(PositionDto oldPosition, char[][] oldState, char[][] newState){
-        return MovementUsecase.kingMovementValidator(oldPosition, this.position, oldState) && !this.isCurrentKingPositionGuarded(oldState);
+        return MovementUsecase.kingMovementValidator(oldPosition, this.position, oldState) && !this.isCurrentKingPositionGuarded(newState);
     }
 
     public Boolean isAbleToEliminateCheckThreat(Character attacker, PositionDto kingPosition, char[][] oldState){
@@ -59,7 +59,6 @@ public class King extends Character{
     }
 
     public Boolean isCurrentKingPositionGuarded(char[][] state){
-        // return false;
         /*
             use utilities from MovementUsecase (except pawn)
             - (queen, rook, bishop) check if the enemy is not actually attacking (blocked by team or enemy themself)
