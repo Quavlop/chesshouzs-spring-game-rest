@@ -23,9 +23,19 @@ public class Pawn extends Character{
 
     public Boolean isValidMove(PositionDto oldPosition, char[][] oldState, char[][] newState){
         String oldOccupiedBlockColor = GameHelper.getPieceColor(oldState[this.position.getRow()][this.position.getCol()]);
-        System.out.println(oldOccupiedBlockColor);
-        System.out.println(MovementUsecase.pawnForwardMovementValidator(oldPosition, this.position, oldState));
-        return MovementUsecase.pawnForwardMovementValidator(oldPosition, this.position, oldState) || (MovementUsecase.pawnKillMovementValidator(oldPosition, this.position, oldState) && oldOccupiedBlockColor != null && oldOccupiedBlockColor != this.color);
+        return (
+            (
+                MovementUsecase.pawnForwardMovementValidator(oldPosition, this.position, oldState) 
+                && !GameHelper.isWall(oldState[this.position.getRow()][this.position.getCol()])
+                && GameHelper.getPieceColor(oldState[this.position.getRow()][this.position.getCol()]) == null
+            )
+            || 
+            (
+                MovementUsecase.pawnKillMovementValidator(oldPosition, this.position, oldState) 
+                && oldOccupiedBlockColor != null 
+                && oldOccupiedBlockColor != this.color
+            )
+        );
     }
 
     public Boolean isAbleToEliminateCheckThreat(Character attacker, PositionDto kingPosition, char[][] oldState){

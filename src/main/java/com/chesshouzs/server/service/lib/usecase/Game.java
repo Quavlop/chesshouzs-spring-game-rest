@@ -28,7 +28,7 @@ public class Game {
 
         // compare the old and new state by checking if movement is only on one piece
         Map<String, Object> doubleMovementScanResult = doubleMovementScanResult(oldState, newState);
-        if ((Boolean)doubleMovementScanResult.get(GameConstants.KEY_IS_DOUBLE)){
+        if ((Boolean)doubleMovementScanResult.get(GameConstants.KEY_IS_DOUBLE) || (Boolean)doubleMovementScanResult.get(GameConstants.KEY_INVALID)){
             data.put(GameConstants.KEY_VALID_MOVE, false);
             return data;
         }
@@ -37,7 +37,13 @@ public class Game {
 
         // map to corresponding class object
         char movingChar = (char)doubleMovementScanResult.get(GameConstants.KEY_CHARACTER);
-        System.out.println(movingChar + " KWK");
+        // System.out.println("SLLS" + movingChar);
+
+        if (movingChar == '\u0000'){
+            data.put(GameConstants.KEY_VALID_MOVE, false);
+            return data;
+        }
+
 
         // map and set the position (color has been set from map)
         Character characterObj = GameHelper.map(movingChar);
@@ -66,14 +72,35 @@ public class Game {
 
         int boardSize = oldState.length;
         
-        char movingChar = ' ';
+        // check row dimension
+        if (boardSize <= 0 || boardSize != GameConstants.boardSize){
+            data.put(GameConstants.KEY_INVALID, true);
+            data.put(GameConstants.KEY_IS_DOUBLE, false);
+            data.put(GameConstants.KEY_NEW_POSITION, null);
+            data.put(GameConstants.KEY_OLD_POSITION, null);
+            data.put(GameConstants.KEY_CHARACTER, '\u0000');
+            return data;
+        }
         
+        // check col dimension
+        if (oldState[0].length <= 0 || oldState[0].length != GameConstants.boardSize){
+            data.put(GameConstants.KEY_INVALID, true);
+            data.put(GameConstants.KEY_IS_DOUBLE, false);
+            data.put(GameConstants.KEY_NEW_POSITION, null);
+            data.put(GameConstants.KEY_OLD_POSITION, null);
+            data.put(GameConstants.KEY_CHARACTER, '\u0000');
+            return data;
+        }
+        
+        char movingChar = ' ';
+
         for (int row = 0; row < boardSize; row++){
             for (int col = 0; col < boardSize; col++){
                 if (oldState[row][col] != newState[row][col]){
-                    if (oldState[row][col] != GameConstants.NONCHARACTER_WALL && newState[row][col] != GameConstants.NONCHARACTER_EMPTY){
+                    if (newState[row][col] != GameConstants.NONCHARACTER_EMPTY){
                         if (!Helper.isCharEmpty(movingChar)){
                             data.put(GameConstants.KEY_IS_DOUBLE, true);
+                            data.put(GameConstants.KEY_INVALID, true);
                             data.put(GameConstants.KEY_NEW_POSITION, null);
                             data.put(GameConstants.KEY_OLD_POSITION, null);
                             data.put(GameConstants.KEY_CHARACTER, '\u0000');
@@ -86,6 +113,7 @@ public class Game {
                     if (oldState[row][col] != GameConstants.NONCHARACTER_EMPTY && newState[row][col] == GameConstants.NONCHARACTER_EMPTY){
                         if (data.get(GameConstants.KEY_OLD_POSITION) != null){
                             data.put(GameConstants.KEY_IS_DOUBLE, true);
+                            data.put(GameConstants.KEY_INVALID, true);
                             data.put(GameConstants.KEY_NEW_POSITION, null);
                             data.put(GameConstants.KEY_OLD_POSITION, null);
                             data.put(GameConstants.KEY_CHARACTER, '\u0000');                            
@@ -97,6 +125,17 @@ public class Game {
             }
         }
 
+
+        if (movingChar == GameConstants.NONCHARACTER_EMPTY || movingChar == GameConstants.NONCHARACTER_WALL || (PositionDto)data.get(GameConstants.KEY_OLD_POSITION) == null || (PositionDto)data.get(GameConstants.KEY_NEW_POSITION) == null){
+            data.put(GameConstants.KEY_INVALID, true);
+            data.put(GameConstants.KEY_IS_DOUBLE, false);
+            data.put(GameConstants.KEY_NEW_POSITION, null);
+            data.put(GameConstants.KEY_OLD_POSITION, null);
+            data.put(GameConstants.KEY_CHARACTER, '\u0000');
+            return data;
+        }
+
+        data.put(GameConstants.KEY_INVALID, false);
         data.put(GameConstants.KEY_IS_DOUBLE, false);
         data.put(GameConstants.KEY_CHARACTER, movingChar);
 

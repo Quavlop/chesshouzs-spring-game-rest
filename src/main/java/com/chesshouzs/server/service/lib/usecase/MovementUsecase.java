@@ -55,6 +55,11 @@ public class MovementUsecase {
         }
 
         int diff = oldPosition.getRow() - newPosition.getRow();
+
+        if (diff == step && step == 2 && !GameHelper.isEmptySquare(oldState[oldPosition.getRow()-1][oldPosition.getCol()])){
+            return false;
+        }
+
         return diff <= step && diff > 0 && oldPosition.getCol() == newPosition.getCol();
     }
 

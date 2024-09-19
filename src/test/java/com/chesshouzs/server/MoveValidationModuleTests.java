@@ -21,7 +21,7 @@ import com.chesshouzs.server.utils.IsValidMoveTestSuite;
 @SpringBootTest
 public class MoveValidationModuleTests {
 
-    // TODO : eat friends, double eat friends, replace walls position on eat / forward, eat enemy, double eat enemy
+    // Attack againsts wall or teammate is not done here (implemented on Character.isValidMove)
     @Test 
     void DoubleMovementScanResultTest() throws Exception {
     
@@ -31,6 +31,7 @@ public class MoveValidationModuleTests {
                 "......k....R..|..R...........|.........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
                 "...........R..|..R...........|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|",
                 new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, false); 
                     put(GameConstants.KEY_IS_DOUBLE, false); 
                     put(GameConstants.KEY_CHARACTER, GameConstants.BLACK_CHARACTER_KING);
                     put(GameConstants.KEY_OLD_POSITION, new PositionDto(0, 6));
@@ -42,6 +43,7 @@ public class MoveValidationModuleTests {
                 "...........R..|..R...........|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
                 "k..........R..|..R...........|.........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|",
                 new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, false); 
                     put(GameConstants.KEY_IS_DOUBLE, false); 
                     put(GameConstants.KEY_CHARACTER, GameConstants.BLACK_CHARACTER_KING);
                     put(GameConstants.KEY_OLD_POSITION, new PositionDto(2, 0));
@@ -53,17 +55,43 @@ public class MoveValidationModuleTests {
                 "...........R..|..R...........|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
                 "...........R..|..R...........|k.............|...........K.N|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|",
                 new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, false); 
                     put(GameConstants.KEY_IS_DOUBLE, false); 
                     put(GameConstants.KEY_CHARACTER, GameConstants.WHITE_CHARACTER_KNIGHT);
                     put(GameConstants.KEY_OLD_POSITION, new PositionDto(2, 9));
                     put(GameConstants.KEY_NEW_POSITION, new PositionDto(3, 13));
                 }}
-            ),              
+            ),   
+            new DoubleMovementScanResultTestSuite(
+                "POSITIVE CASE : white eat black", 
+                "...Q.........n|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                ".............Q|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, false); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, GameConstants.WHITE_CHARACTER_QUEEN);
+                    put(GameConstants.KEY_OLD_POSITION, new PositionDto(0, 3));
+                    put(GameConstants.KEY_NEW_POSITION, new PositionDto(0, 13));
+                }}
+            ),     
+            new DoubleMovementScanResultTestSuite(
+                "POSITIVE CASE : black eat white", 
+                "..............|............b.|.............Q|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "..............|..............|.............b|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, false); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, GameConstants.BLACK_CHARACTER_BISHOP);
+                    put(GameConstants.KEY_OLD_POSITION, new PositionDto(1, 12));
+                    put(GameConstants.KEY_NEW_POSITION, new PositionDto(2, 13));
+                }}
+            ),                                     
             new DoubleMovementScanResultTestSuite(
                 "NEGATIVE CASE : double movement (1)", 
                 "...........R..|........R.....|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
                 "k..........R..|R.............|.........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|",
                 new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
                     put(GameConstants.KEY_IS_DOUBLE, true); 
                     put(GameConstants.KEY_CHARACTER, '\u0000');
                     put(GameConstants.KEY_OLD_POSITION, null);
@@ -75,6 +103,7 @@ public class MoveValidationModuleTests {
                 "...........R..|..R...........|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
                 "k..........R..|..R...........|........N.....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|",
                 new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
                     put(GameConstants.KEY_IS_DOUBLE, true); 
                     put(GameConstants.KEY_CHARACTER, '\u0000');
                     put(GameConstants.KEY_OLD_POSITION, null);
@@ -86,12 +115,113 @@ public class MoveValidationModuleTests {
                 "...........R..|..R...........|k........N....|...........K..|..............|.............r|..............|..............|..............|..............|..............|..............|..............|.............r|", 
                 "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
                 new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
                     put(GameConstants.KEY_IS_DOUBLE, true); 
                     put(GameConstants.KEY_CHARACTER, '\u0000');
                     put(GameConstants.KEY_OLD_POSITION, null);
                     put(GameConstants.KEY_NEW_POSITION, null);
                 }}
             ), 
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : double eat enemy (attacker from same color)", 
+                "...........rR.|...........Rr.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+
+                "...........R..|............R.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),       
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : double eat enemy (attacker from different color - black eat white AND vice versa)", 
+                "...........rR.|...........Rr.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+
+                "............r.|............R.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),                   
+
+            // test case for random state altercation
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : remove all piece", 
+                "...........rR.|...........Rr.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ), 
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : remove several piece (1)", 
+                "...........rR.|...........Rr.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "...........r..|............r.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : remove several piece (2)", 
+                "...........rR.|...........Rr.|.......kQ.....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "...........r..|............r.|........Q.....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),    
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : remove one piece", 
+                "...........rR.|...........Rr.|.......kQn....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "...........rR.|...........Rr.|.......kQ.....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),              
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : adding piece (1)", 
+                "...........rR.|...........Rr.|.......kQ.....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "..............|qqqqqq........|..............|...rrrr.......|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ), 
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : adding piece (2)", 
+                "...........rR.|...........Rr.|.......kQ.....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "...........rR.|...........Rr.|.......kQn....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),                                                              
         };
 
         int countFail = 0;
@@ -126,7 +256,6 @@ public class MoveValidationModuleTests {
 
     }
 
-    // TODO : movement againts wall & friends (on single & double step), eat friends & wall on left and right, 
     // checking is done on player-POV-wise. By default on db, black is on top, therefore board is flipped if player is black color
     @Test 
     void PawnIsValidMoveTest() throws Exception {
@@ -184,7 +313,91 @@ public class MoveValidationModuleTests {
                 "..............|..............|............P.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
                 "............P.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
                 false
-            ),                                             
+            ),
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn forward movement and collide with wall", 
+                "..............|............0.|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),     
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn kill movement and collide with left wall", 
+                "..............|...........0..|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...........p..|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ), 
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn kill movement and collide with right wall", 
+                "..............|.............0|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|.............p|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ), 
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn on default position and try to bypass wall ahead", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|.............0|.............p|..............|..............|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.............p|.............0|..............|..............|..............|", 
+                false
+            ),
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn forward movement and collide with friend", 
+                "..............|............n.|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),          
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn forward movement and collide with enemy", 
+                "..............|............N.|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),   
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn kill friend on left", 
+                "..............|...........n..|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...........p..|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),        
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn kill friend on right", 
+                "..............|.k...........n|............p.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|.k...........p|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ), 
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn double movement collide with wall (took double step)", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.0............|..............|.p............|..............|..............|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.p............|..............|..............|..............|..............|", 
+                false
+            ),                
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn double movement collide with friend (took double step)", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.r............|..............|.p............|..............|..............|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.p............|..............|..............|..............|..............|", 
+                false
+            ),
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn double movement collide with enemy (took double step)", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.R............|..............|.p............|..............|..............|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.p............|..............|..............|..............|..............|", 
+                false
+            ),  
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn double movement bypassing (jumpover) wall", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|.0............|.p............|..............|..............|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.p............|.0............|..............|..............|..............|", 
+                false
+            ),              
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn double movement bypassing (jumpover) friend", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|.r............|.p............|..............|..............|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.p............|.r............|..............|..............|..............|", 
+                false
+            ),  
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : Pawn double movement bypassing (jumpover) friend", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|.R............|.p............|..............|..............|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|.p............|.R............|..............|..............|..............|", 
+                false
+            ),                                                                                                                                                                                                                      
         };
 
         int countFail = 0;
@@ -195,6 +408,8 @@ public class MoveValidationModuleTests {
             Map<String, Object> movement = Game.getMovementData(oldStateArgToArray, newStateArgToArray);
 
             Boolean isNotDoubleMovement = (Boolean)movement.get(GameConstants.KEY_VALID_MOVE);
+            Character character = (Character)movement.get(GameConstants.KEY_CHARACTER);            
+
             assertEquals(
                 isNotDoubleMovement, 
                 true, 
@@ -205,9 +420,8 @@ public class MoveValidationModuleTests {
                             )                
             );
 
-            Character character = (Character)movement.get(GameConstants.KEY_CHARACTER);
-            System.out.println("LOL " + character.getPosition().getRow() + " " + character.getPosition().getCol());
-            
+            System.out.println("LOL " + test.getName() + " " + character.getPosition().getRow() + " " + character.getPosition().getCol() + " " + oldStateArgToArray[character.getPosition().getRow()][character.getPosition().getCol()]);
+
             
             Boolean result = character.isValidMove((PositionDto)movement.get(GameConstants.KEY_OLD_POSITION), oldStateArgToArray, newStateArgToArray);
             assertEquals(

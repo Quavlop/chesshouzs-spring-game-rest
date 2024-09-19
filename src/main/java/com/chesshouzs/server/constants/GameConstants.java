@@ -48,5 +48,8 @@ public class GameConstants {
 	public static String KEY_INVALID_MOVES = "invalid_moves";
 	public static String KEY_VALID_MOVES = "valid_moves";
 
+	public static String KEY_INVALID = "invalid";
+
+	public static int boardSize = 14;
 	
 }

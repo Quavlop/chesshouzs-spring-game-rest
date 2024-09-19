@@ -223,6 +223,10 @@ public class GameHelper {
         return ch == GameConstants.NONCHARACTER_WALL;
     }
 
+    public static Boolean isEmptySquare(char ch){
+        return ch == GameConstants.NONCHARACTER_EMPTY;
+    }
+
     public static Boolean getDiagonalAttackers(char ch, String playerColor){
         return getQueenColor(ch) != playerColor || getBishopColor(ch) != playerColor;
     }
