@@ -413,7 +413,7 @@ public class MoveValidationModuleTests {
             assertEquals(
                 isNotDoubleMovement, 
                 true, 
-                String.format("[FAILED TEST] MoveValidationModuleTests.CharacterIsValidMove, failed on double movement scan check, %s\nExpected: %s\nActual: %s", 
+                String.format("[FAILED TEST] MoveValidationModuleTests.PawnIsValidMove, failed on double movement scan check, %s\nExpected: %s\nActual: %s", 
                               test.getName(), 
                               isNotDoubleMovement, 
                               true
@@ -426,7 +426,7 @@ public class MoveValidationModuleTests {
             assertEquals(
                 result, 
                 test.getExpectation(), 
-                String.format("[FAILED TEST] MoveValidationModuleTests.CharacterIsValidMove : %s\nExpected: %s\nActual: %s", 
+                String.format("[FAILED TEST] MoveValidationModuleTests.PawnIsValidMove : %s\nExpected: %s\nActual: %s", 
                               test.getName(), 
                               result, 
                               test.getExpectation()
@@ -439,7 +439,7 @@ public class MoveValidationModuleTests {
         } else {
             System.out.println("==== FAILED ====");
         }
-        System.out.println(String.format("[TEST REPORT] MoveValidationModuleTests.CharacterIsValidMove : %s / %s tests passed", tests.length - countFail, tests.length));        
+        System.out.println(String.format("[TEST REPORT] MoveValidationModuleTests.PawnIsValidMove : %s / %s tests passed", tests.length - countFail, tests.length));        
     }
 
     // Check status movement test cases will be implemented on different test module.
@@ -714,7 +714,7 @@ public class MoveValidationModuleTests {
             assertEquals(
                 isNotDoubleMovement, 
                 true, 
-                String.format("[FAILED TEST] MoveValidationModuleTests.CharacterIsValidMove, failed on double movement scan check, %s\nExpected: %s\nActual: %s", 
+                String.format("[FAILED TEST] MoveValidationModuleTests.KingIsValidMove, failed on double movement scan check, %s\nExpected: %s\nActual: %s", 
                               test.getName(), 
                               isNotDoubleMovement, 
                               true
@@ -727,7 +727,7 @@ public class MoveValidationModuleTests {
             assertEquals(
                 result, 
                 test.getExpectation(), 
-                String.format("[FAILED TEST] MoveValidationModuleTests.CharacterIsValidMove : %s\nExpected: %s\nActual: %s", 
+                String.format("[FAILED TEST] MoveValidationModuleTests.KingIsValidMove : %s\nExpected: %s\nActual: %s", 
                               test.getName(), 
                               result, 
                               test.getExpectation()
@@ -740,7 +740,146 @@ public class MoveValidationModuleTests {
         } else {
             System.out.println("==== FAILED ====");
         }
-        System.out.println(String.format("[TEST REPORT] MoveValidationModuleTests.CharacterIsValidMove : %s / %s tests passed", tests.length - countFail, tests.length));   
+        System.out.println(String.format("[TEST REPORT] MoveValidationModuleTests.KingIsValidMove : %s / %s tests passed", tests.length - countFail, tests.length));   
+    }
+
+    @Test
+    void RookIsValidMoveTest() throws Exception {
+        IsValidMoveTestSuite[] tests = {
+
+            // regular movement
+            new IsValidMoveTestSuite(
+                "POSITIVE CASE : rook move to right", 
+                "..............|...R..........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|.............R|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                true
+            ),
+            new IsValidMoveTestSuite(
+                "POSITIVE CASE : rook move to left", 
+                "..............|...R..........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|R.............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                true
+            ),    
+            new IsValidMoveTestSuite(
+                "POSITIVE CASE : rook move to top", 
+                "..............|..............|..............|R.............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "R.............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                true
+            ),                  
+            new IsValidMoveTestSuite(
+                "POSITIVE CASE : rook move to bottom", 
+                "R.............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|R.............|", 
+                true
+            ),    
+            
+            // kill movement
+            new IsValidMoveTestSuite(
+                "POSITIVE CASE : kill enemy on horizontal", 
+                "..............|...r..........|..............|r........Q....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...r..........|..............|.........r....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                true
+            ),  
+            new IsValidMoveTestSuite(
+                "POSITIVE CASE : kill enemy on vertical", 
+                "..............|...r..........|N.............|r........n....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...r..........|r.............|.........n....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                true
+            ),            
+
+            // NEGATIVE CASE : out of scope movement
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : out of scope movement (1)", 
+                "..............|..............|..............|r.............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...r..........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : out of scope movement (2)", 
+                "..............|...r......n...|r.............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...r......n...|..............|.....r........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),   
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : out of scope movement (3)", 
+                "..............|..............|..............|..............|........R.....|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|..............|..............|.........R....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),                                
+
+
+            // NEGATIVE CASE : kill friend movement
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : kill friend on horizontal", 
+                "..............|...r..........|..............|r........n....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...r..........|..............|.........r....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),  
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : kill friend on vertical", 
+                "..............|...r..........|n.............|r........n....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...r..........|r.............|.........n....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),              
+
+            // NEGATIVE CASE : override wall movement
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : override wall on horizontal", 
+                "..............|...r..........|..............|r........0....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...r..........|..............|.........r....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),  
+            new IsValidMoveTestSuite(
+                "NEGATIVE CASE : override wall on vertical", 
+                "..............|...r..........|0.............|r........n....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "..............|...r..........|r.............|.........n....|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                false
+            ),              
+            
+            // NEGATIVE CASE : jump over friend, enemy, wall
+            
+        };
+
+        int countFail = 0;
+        for (IsValidMoveTestSuite test : tests){
+            char [][] oldStateArgToArray = GameHelper.convertNotationToArray(test.getOldStateArg());
+            char [][] newStateArgToArray = GameHelper.convertNotationToArray(test.getNewStateArg());
+
+            Map<String, Object> movement = Game.getMovementData(oldStateArgToArray, newStateArgToArray);
+
+            Boolean isNotDoubleMovement = (Boolean)movement.get(GameConstants.KEY_VALID_MOVE);
+            Character character = (Character)movement.get(GameConstants.KEY_CHARACTER);            
+
+            assertEquals(
+                isNotDoubleMovement, 
+                true, 
+                String.format("[FAILED TEST] MoveValidationModuleTests.KingIsValidMove, failed on double movement scan check, %s\nExpected: %s\nActual: %s", 
+                              test.getName(), 
+                              isNotDoubleMovement, 
+                              true
+                            )                
+            );
+
+
+            
+            Boolean result = character.isValidMove((PositionDto)movement.get(GameConstants.KEY_OLD_POSITION), oldStateArgToArray, newStateArgToArray);
+            assertEquals(
+                result, 
+                test.getExpectation(), 
+                String.format("[FAILED TEST] MoveValidationModuleTests.KingIsValidMove : %s\nExpected: %s\nActual: %s", 
+                              test.getName(), 
+                              result, 
+                              test.getExpectation()
+                            )                     
+            );
+        }
+
+        if (countFail <= 0){
+            System.out.println("==== PASSED ALL TEST CASE ====");
+        } else {
+            System.out.println("==== FAILED ====");
+        }
+        System.out.println(String.format("[TEST REPORT] MoveValidationModuleTests.KingIsValidMove : %s / %s tests passed", tests.length - countFail, tests.length));   
     }
 
 }

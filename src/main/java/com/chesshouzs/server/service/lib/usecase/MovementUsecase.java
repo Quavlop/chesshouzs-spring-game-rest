@@ -24,7 +24,13 @@ import io.lettuce.core.StringMatchResult.Position;
 
 public class MovementUsecase {
     public static Boolean straightMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){
-        return oldPosition.getRow() == newPosition.getRow() ^ oldPosition.getCol() == newPosition.getCol();
+        String replacedCharColor = GameHelper.getPieceColor(oldState[newPosition.getRow()][newPosition.getCol()]);
+        String rookColor = GameHelper.getPieceColor(oldState[oldPosition.getRow()][oldPosition.getCol()]);
+
+        return (
+            (oldPosition.getRow() == newPosition.getRow() ^ oldPosition.getCol() == newPosition.getCol())
+            && replacedCharColor != rookColor && !GameHelper.isWall(oldState[newPosition.getRow()][newPosition.getCol()])
+            );
     }
 
     public static Boolean diagonalMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){
