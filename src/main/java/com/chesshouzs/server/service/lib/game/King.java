@@ -59,6 +59,7 @@ public class King extends Character{
     }
 
     public Boolean isCurrentKingPositionGuarded(char[][] state){
+        // return false;
         /*
             use utilities from MovementUsecase (except pawn)
             - (queen, rook, bishop) check if the enemy is not actually attacking (blocked by team or enemy themself)
@@ -72,6 +73,9 @@ public class King extends Character{
         Boolean pawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyPawn(this.position, state, this.color);
         Boolean evolvedPawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyEvolvedPawn(this.position, state, this.color);
         Boolean enemyKingGuard = MovementUsecase.isPositionCoveredByEnemyKing(this.position, state, this.color);
+
+        System.out.println(longRangeAttackersGuard + " " + knightAttackersGuard + " " + pawnAttackersGuard + " " + evolvedPawnAttackersGuard + " " + enemyKingGuard);
+
         return longRangeAttackersGuard || knightAttackersGuard || pawnAttackersGuard || evolvedPawnAttackersGuard || enemyKingGuard;
     }
 

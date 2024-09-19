@@ -424,7 +424,9 @@ public class MovementUsecase {
             if (pos.getRow() >= boardSize || pos.getCol() >= boardSize || pos.getRow() < 0 || pos.getCol() < 0){
                 continue;
             }
-            if (GameHelper.getKnightColor(state[pos.getRow()][pos.getCol()]) != playerColor){
+
+            String knightColor = GameHelper.getKnightColor(state[pos.getRow()][pos.getCol()]);
+            if (knightColor != null && knightColor != playerColor){
                 return true;
             }
         }
@@ -505,7 +507,9 @@ public class MovementUsecase {
             if (pos.getRow() >= boardSize || pos.getCol() >= boardSize || pos.getRow() < 0 || pos.getCol() < 0){
                 continue;
             }
-            if (GameHelper.getKingColor(state[pos.getRow()][pos.getCol()]) != playerColor){
+
+            String enemyKingColor = GameHelper.getKingColor(state[pos.getRow()][pos.getCol()]); 
+            if (enemyKingColor != null && enemyKingColor != playerColor){
                 return true;
             }
         }
@@ -533,7 +537,9 @@ public class MovementUsecase {
             if (pos.getRow() >= boardSize || pos.getCol() >= boardSize || pos.getRow() < 0 || pos.getCol() < 0){
                 continue;
             }
-            if (GameHelper.getKingColor(state[pos.getRow()][pos.getCol()]) != playerColor){
+
+            String evolvedPawnColor = GameHelper.getEvolvedPawnColor(state[pos.getRow()][pos.getCol()]);
+            if (evolvedPawnColor != null && evolvedPawnColor != playerColor){
                 return true;
             }
         }

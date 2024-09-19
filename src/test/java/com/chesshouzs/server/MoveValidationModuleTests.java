@@ -420,7 +420,6 @@ public class MoveValidationModuleTests {
                             )                
             );
 
-            System.out.println("LOL " + test.getName() + " " + character.getPosition().getRow() + " " + character.getPosition().getCol() + " " + oldStateArgToArray[character.getPosition().getRow()][character.getPosition().getCol()]);
 
             
             Boolean result = character.isValidMove((PositionDto)movement.get(GameConstants.KEY_OLD_POSITION), oldStateArgToArray, newStateArgToArray);
@@ -442,4 +441,58 @@ public class MoveValidationModuleTests {
         }
         System.out.println(String.format("[TEST REPORT] MoveValidationModuleTests.CharacterIsValidMove : %s / %s tests passed", tests.length - countFail, tests.length));        
     }
+
+    @Test 
+    void KingIsValidMoveTest() throws Exception {
+        IsValidMoveTestSuite[] tests = {
+            new IsValidMoveTestSuite(
+                "POSITIVE CASE : black king move to top", 
+                "..............|...k..........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                "...k..........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                true
+            )   
+        };
+
+        int countFail = 0;
+        for (IsValidMoveTestSuite test : tests){
+            char [][] oldStateArgToArray = GameHelper.convertNotationToArray(test.getOldStateArg());
+            char [][] newStateArgToArray = GameHelper.convertNotationToArray(test.getNewStateArg());
+
+            Map<String, Object> movement = Game.getMovementData(oldStateArgToArray, newStateArgToArray);
+
+            Boolean isNotDoubleMovement = (Boolean)movement.get(GameConstants.KEY_VALID_MOVE);
+            Character character = (Character)movement.get(GameConstants.KEY_CHARACTER);            
+
+            assertEquals(
+                isNotDoubleMovement, 
+                true, 
+                String.format("[FAILED TEST] MoveValidationModuleTests.CharacterIsValidMove, failed on double movement scan check, %s\nExpected: %s\nActual: %s", 
+                              test.getName(), 
+                              isNotDoubleMovement, 
+                              true
+                            )                
+            );
+
+
+            
+            Boolean result = character.isValidMove((PositionDto)movement.get(GameConstants.KEY_OLD_POSITION), oldStateArgToArray, newStateArgToArray);
+            assertEquals(
+                result, 
+                test.getExpectation(), 
+                String.format("[FAILED TEST] MoveValidationModuleTests.CharacterIsValidMove : %s\nExpected: %s\nActual: %s", 
+                              test.getName(), 
+                              result, 
+                              test.getExpectation()
+                            )                     
+            );
+        }
+
+        if (countFail <= 0){
+            System.out.println("==== PASSED ALL TEST CASE ====");
+        } else {
+            System.out.println("==== FAILED ====");
+        }
+        System.out.println(String.format("[TEST REPORT] MoveValidationModuleTests.CharacterIsValidMove : %s / %s tests passed", tests.length - countFail, tests.length));   
+    }
+
 }
