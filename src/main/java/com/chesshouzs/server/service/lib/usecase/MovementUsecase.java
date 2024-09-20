@@ -25,11 +25,12 @@ import io.lettuce.core.StringMatchResult.Position;
 public class MovementUsecase {
     public static Boolean straightMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){
         String replacedCharColor = GameHelper.getPieceColor(oldState[newPosition.getRow()][newPosition.getCol()]);
-        String rookColor = GameHelper.getPieceColor(oldState[oldPosition.getRow()][oldPosition.getCol()]);
+        String attackerColor = GameHelper.getPieceColor(oldState[oldPosition.getRow()][oldPosition.getCol()]);
 
         return (
             (oldPosition.getRow() == newPosition.getRow() ^ oldPosition.getCol() == newPosition.getCol())
-            && replacedCharColor != rookColor && !GameHelper.isWall(oldState[newPosition.getRow()][newPosition.getCol()])
+            && replacedCharColor != attackerColor && !GameHelper.isWall(oldState[newPosition.getRow()][newPosition.getCol()])
+            && isTwoPositionFaceToFaceFlat(oldState, oldPosition, newPosition, attackerColor)
             );
     }
 
@@ -90,7 +91,7 @@ public class MovementUsecase {
             int end = Math.max(firstPosition.getCol(), secondPosition.getCol());
 
             for (int col = start + 1; col < end; col++) {
-                if (state[firstPosition.getRow()][col] != GameConstants.NONCHARACTER_WALL) {
+                if (state[firstPosition.getRow()][col] != GameConstants.NONCHARACTER_EMPTY) {
                     return false;
                 }
             }
@@ -100,7 +101,7 @@ public class MovementUsecase {
             int end = Math.max(firstPosition.getRow(), secondPosition.getRow());
 
             for (int row = start + 1; row < end; row++) {
-                if (state[row][firstPosition.getCol()] != GameConstants.NONCHARACTER_WALL) {
+                if (state[row][firstPosition.getCol()] != GameConstants.NONCHARACTER_EMPTY) {
                     return false;
                 }
             }
