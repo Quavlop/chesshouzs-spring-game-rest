@@ -21,21 +21,6 @@ import com.chesshouzs.server.utils.IsValidMoveTestSuite;
 @SpringBootTest
 public class MoveValidationModuleTests {
 
-    // TODO TEST CASE : 
-    /*
-            q  q 
-            q
-
-            q  q
-               q  q
-
-            B b
-            b
-
-            q
-              Q
-     */
-
     // Attack againsts wall or teammate is not done here (implemented on Character.isValidMove)
     @Test 
     void DoubleMovementScanResultTest() throws Exception {
@@ -260,7 +245,82 @@ public class MoveValidationModuleTests {
                     put(GameConstants.KEY_OLD_POSITION, null);
                     put(GameConstants.KEY_NEW_POSITION, null);
                 }}
-            ),                                                              
+            ),  
+            
+            
+            // NEGATIVE CASE : corner cases 
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : two queen, left with one queen (one is replaced by another OR removed)", 
+                "..............|..............|..q...........|..q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "..............|..............|..q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),      
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : move but changed color", 
+                "..............|..............|..q...........|.qQ...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "..............|..............|..............|.q............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ), 
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : two queen, one changing color", 
+                "..............|..............|..Q...........|..q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "..............|..q...........|..q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, true); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),                                            
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : contains invalid character (1)", 
+                "..............|..............|..Q...,.......|..q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "..............|..q...........|..Q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ), 
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : contains invalid character (2)", 
+                ".........w....|..............|..Q...,.......|..q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "..............|..q...........|..Q....x......|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : contains invalid character (3)", 
+                "..............|..............|..Q...,.......|..q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                "....LMAO......|..q...........|..Q...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),                                      
         };
 
         int countFail = 0;

@@ -57,6 +57,19 @@ public class Game {
         return data;
     }
 
+
+    public static Boolean containsUnknownCharacter(char[][] state){
+        int boardSize = state.length;
+
+        for (int row = 0; row < boardSize; row++){
+            for (int col = 0; col < boardSize; col++){
+
+            }
+        }
+
+        return false;
+    }   
+
     /* 
         returns {   
             is_double : [Boolean]
@@ -93,9 +106,20 @@ public class Game {
         }
         
         char movingChar = ' ';
+        Map<java.lang.Character, Boolean> validCharacters = GameConstants.validCharacters;
 
         for (int row = 0; row < boardSize; row++){
             for (int col = 0; col < boardSize; col++){
+                // check if board contains invalid characters;
+                if (!validCharacters.containsKey(java.lang.Character.valueOf(newState[row][col])) || !validCharacters.containsKey(java.lang.Character.valueOf(oldState[row][col]))){
+                    data.put(GameConstants.KEY_INVALID, true);
+                    data.put(GameConstants.KEY_IS_DOUBLE, false);
+                    data.put(GameConstants.KEY_NEW_POSITION, null);
+                    data.put(GameConstants.KEY_OLD_POSITION, null);
+                    data.put(GameConstants.KEY_CHARACTER, '\u0000');
+                    return data;
+                }
+
                 if (oldState[row][col] != newState[row][col]){
                     if (newState[row][col] != GameConstants.NONCHARACTER_EMPTY){
                         if (!Helper.isCharEmpty(movingChar)){

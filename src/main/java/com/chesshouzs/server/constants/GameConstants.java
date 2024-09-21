@@ -1,5 +1,7 @@
 package com.chesshouzs.server.constants;
 
+import java.util.HashMap;
+import java.util.Map;
 public class GameConstants {
     public static String WHITE_COLOR = "WHITE";
     public static String BLACK_COLOR = "BLACK";
@@ -30,8 +32,6 @@ public class GameConstants {
 	public static String END_GAME_DRAW_TYPE= "DRAW";
 	public static String END_GAME_TIMEOUT_TYPE = "TIMEOUT";
 
-
-
 	public static Integer ELO_CALC_K_FACTOR = 20;
 
 	public static String KEY_VALID_MOVE = "valid_move";
@@ -51,5 +51,24 @@ public class GameConstants {
 	public static String KEY_INVALID = "invalid";
 
 	public static int boardSize = 14;
+
+	public static Map<Character, Boolean> validCharacters = Map.ofEntries(
+	 	Map.entry((Character)NONCHARACTER_WALL, true), 
+		Map.entry((Character)NONCHARACTER_EMPTY, true),
+		Map.entry((Character)WHITE_CHARACTER_BISHOP, true),
+		Map.entry((Character)WHITE_CHARACTER_EVOLVED_PAWN, true),
+		Map.entry((Character)WHITE_CHARACTER_KING, true),
+		Map.entry((Character)WHITE_CHARACTER_KNIGHT, true),
+		Map.entry((Character)WHITE_CHARACTER_PAWN, true),
+		Map.entry((Character)WHITE_CHARACTER_QUEEN, true),
+		Map.entry((Character)WHITE_CHARACTER_ROOK, true),
+		Map.entry((Character)BLACK_CHARACTER_BISHOP, true),
+		Map.entry((Character)BLACK_CHARACTER_EVOLVED_PAWN, true),
+		Map.entry((Character)BLACK_CHARACTER_KING, true),
+		Map.entry((Character)BLACK_CHARACTER_KNIGHT, true),
+		Map.entry((Character)BLACK_CHARACTER_PAWN, true),
+		Map.entry((Character)BLACK_CHARACTER_QUEEN, true),
+		Map.entry((Character)BLACK_CHARACTER_ROOK, true)		
+	);	
 	
 }
