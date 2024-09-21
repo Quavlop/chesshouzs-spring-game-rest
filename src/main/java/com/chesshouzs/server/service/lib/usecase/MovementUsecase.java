@@ -70,7 +70,15 @@ public class MovementUsecase {
     public static Boolean knightShapeMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){
         int rowDiff = Math.abs(oldPosition.getRow() - newPosition.getRow());
         int colDiff = Math.abs(oldPosition.getCol() - newPosition.getCol());
-        return (rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2);
+
+        String replacedCharColor = GameHelper.getPieceColor(oldState[newPosition.getRow()][newPosition.getCol()]);
+        String attackerColor = GameHelper.getPieceColor(oldState[oldPosition.getRow()][oldPosition.getCol()]);
+        System.out.println(replacedCharColor + " " + attackerColor + " WKKWKW");
+        return (
+            ((rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2))
+            && replacedCharColor != attackerColor 
+            && !GameHelper.isWall(oldState[newPosition.getRow()][newPosition.getCol()])
+            );
     }
 
     public static Boolean pawnForwardMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){
