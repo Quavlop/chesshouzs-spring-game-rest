@@ -37,7 +37,16 @@ public class MovementUsecase {
     public static Boolean diagonalMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){
         int rowDiff = Math.abs(oldPosition.getRow() - newPosition.getRow());
         int colDiff = Math.abs(oldPosition.getCol() - newPosition.getCol());
-        return rowDiff == colDiff && rowDiff > 0 && colDiff > 0;
+
+        String replacedCharColor = GameHelper.getPieceColor(oldState[newPosition.getRow()][newPosition.getCol()]);
+        String attackerColor = GameHelper.getPieceColor(oldState[oldPosition.getRow()][oldPosition.getCol()]);
+
+
+        return (
+            rowDiff == colDiff && rowDiff > 0 && colDiff > 0
+            && replacedCharColor != attackerColor && !GameHelper.isWall(oldState[newPosition.getRow()][newPosition.getCol()])
+            && isTwoPositionFaceToFaceDiagonal(oldState, oldPosition, newPosition, attackerColor)
+        );
     }
 
     public static Boolean kingMovementValidator(PositionDto oldPosition, PositionDto newPosition, char[][] oldState){
@@ -125,7 +134,7 @@ public class MovementUsecase {
                 int nCol = firstPosition.getCol() + 1;
 
                 while (nRow < secondPosition.getRow() && nCol < secondPosition.getCol()) {
-                    if (state[nRow++][nCol++] != GameConstants.NONCHARACTER_WALL) {
+                    if (state[nRow++][nCol++] != GameConstants.NONCHARACTER_EMPTY) {
                         return false;
                     }
                 }
@@ -134,7 +143,7 @@ public class MovementUsecase {
                 int nCol = firstPosition.getCol() - 1;
 
                 while (nRow < secondPosition.getRow() && nCol > secondPosition.getCol()) {
-                    if (state[nRow++][nCol--] != GameConstants.NONCHARACTER_WALL) {
+                    if (state[nRow++][nCol--] != GameConstants.NONCHARACTER_EMPTY) {
                         return false;
                     }
                 }
@@ -145,7 +154,7 @@ public class MovementUsecase {
                 int nCol = secondPosition.getCol() + 1;
 
                 while (nRow < firstPosition.getRow() && nCol < firstPosition.getCol()) {
-                    if (state[nRow++][nCol++] != GameConstants.NONCHARACTER_WALL) {
+                    if (state[nRow++][nCol++] != GameConstants.NONCHARACTER_EMPTY) {
                         return false;
                     }
                 }
@@ -154,7 +163,7 @@ public class MovementUsecase {
                 int nCol = secondPosition.getCol() - 1;
 
                 while (nRow < firstPosition.getRow() && nCol > firstPosition.getCol()) {
-                    if (state[nRow++][nCol--] != GameConstants.NONCHARACTER_WALL) {
+                    if (state[nRow++][nCol--] != GameConstants.NONCHARACTER_EMPTY) {
                         return false;
                     }
                 }
