@@ -245,12 +245,12 @@ public class MovementUsecase {
             while (row < boardSize && col < boardSize){
                 char character = state[row++][col++];
                 String attackerQueenColor = GameHelper.getQueenColor(character);
-                if (attackerQueenColor != playerColor){
+                if (attackerQueenColor != null && attackerQueenColor != playerColor){
                       attackers.add(new Queen(attackerQueenColor, new PositionDto(row-1, col-1)));
                       continue;
                 } 
                 String attackerBishopColor = GameHelper.getBishopColor(character);
-                if (attackerBishopColor != playerColor){
+                if (attackerBishopColor != null && attackerBishopColor != playerColor){
                     attackers.add(new Bishop(attackerBishopColor, new PositionDto(row-1, col-1)));
                     continue;
                 } 
@@ -262,12 +262,12 @@ public class MovementUsecase {
             while (row < boardSize && col >= 0){
                 char character = state[row++][col--]; 
                 String attackerQueenColor = GameHelper.getQueenColor(character);
-                if (attackerQueenColor != playerColor){
+                if (attackerQueenColor != null && attackerQueenColor != playerColor){
                       attackers.add(new Queen(attackerQueenColor, new PositionDto(row-1, col+1)));
                       continue;
                 } 
                 String attackerBishopColor = GameHelper.getBishopColor(character);
-                if (attackerBishopColor != playerColor){
+                if (attackerBishopColor != null && attackerBishopColor != playerColor){
                     attackers.add(new Bishop(attackerBishopColor, new PositionDto(row-1, col+1)));
                     continue;
                 } 
@@ -279,12 +279,12 @@ public class MovementUsecase {
             while (row >= 0 && col < boardSize){
                 char character = state[row--][col++]; 
                 String attackerQueenColor = GameHelper.getQueenColor(character);
-                if (attackerQueenColor != playerColor){
+                if (attackerQueenColor != null && attackerQueenColor != playerColor){
                       attackers.add(new Queen(attackerQueenColor, new PositionDto(row+1, col-1)));
                       continue;
                 } 
                 String attackerBishopColor = GameHelper.getBishopColor(character);
-                if (attackerBishopColor != playerColor){
+                if (attackerBishopColor != null && attackerBishopColor != playerColor){
                     attackers.add(new Bishop(attackerBishopColor, new PositionDto(row+1, col-1)));
                     continue;
                 } 
@@ -295,12 +295,12 @@ public class MovementUsecase {
             while (row >= 0 && col >= 0){
                 char character = state[row--][col--]; 
                 String attackerQueenColor = GameHelper.getQueenColor(character);
-                if (attackerQueenColor != playerColor){
+                if (attackerQueenColor != null && attackerQueenColor != playerColor){
                       attackers.add(new Queen(attackerQueenColor, new PositionDto(row+1, col+1)));
                       continue;
                 } 
                 String attackerBishopColor = GameHelper.getBishopColor(character);
-                if (attackerBishopColor != playerColor){
+                if (attackerBishopColor != null && attackerBishopColor != playerColor){
                     attackers.add(new Bishop(attackerBishopColor, new PositionDto(row+1, col+1)));
                     continue;
                 } 
@@ -375,12 +375,12 @@ public class MovementUsecase {
         while (col < boardSize){
             char character = state[row][col++]; 
             String attackerQueenColor = GameHelper.getQueenColor(character);
-            if (attackerQueenColor != playerColor){
+            if (attackerQueenColor != null && attackerQueenColor != playerColor){
                   attackers.add(new Queen(attackerQueenColor, new PositionDto(row, col-1)));
                   continue;
             } 
             String attackerRookColor = GameHelper.getRookColor(character);
-            if (attackerRookColor != playerColor){
+            if (attackerRookColor != null && attackerRookColor != playerColor){
                 attackers.add(new Rook(attackerRookColor, new PositionDto(row, col-1)));
                 continue;
             }
@@ -392,12 +392,12 @@ public class MovementUsecase {
         while (col > 0){
             char character = state[row][col--]; 
             String attackerQueenColor = GameHelper.getQueenColor(character);
-            if (attackerQueenColor != playerColor){
+            if (attackerQueenColor != null && attackerQueenColor != playerColor){
                   attackers.add(new Queen(attackerQueenColor, new PositionDto(row, col+1)));
                   continue;
             } 
             String attackerRookColor = GameHelper.getRookColor(character);
-            if (attackerRookColor != playerColor){
+            if (attackerRookColor != null && attackerRookColor != playerColor){
                 attackers.add(new Rook(attackerRookColor, new PositionDto(row, col+1)));
                 continue;
             }
@@ -410,12 +410,12 @@ public class MovementUsecase {
         while (row > 0){
             char character = state[row--][col]; 
             String attackerQueenColor = GameHelper.getQueenColor(character);
-            if (attackerQueenColor != playerColor){
+            if (attackerQueenColor != null && attackerQueenColor != playerColor){
                   attackers.add(new Queen(attackerQueenColor, new PositionDto(row+1, col)));
                   continue;
             } 
             String attackerRookColor = GameHelper.getRookColor(character);
-            if (attackerRookColor != playerColor){
+            if (attackerRookColor != null && attackerRookColor != playerColor){
                 attackers.add(new Rook(attackerRookColor, new PositionDto(row+1, col)));
                 continue;
             }
@@ -427,12 +427,12 @@ public class MovementUsecase {
         while (row < boardSize){
             char character = state[row++][col]; 
             String attackerQueenColor = GameHelper.getQueenColor(character);
-            if (attackerQueenColor != playerColor){
+            if (attackerQueenColor != null && attackerQueenColor != playerColor){
                   attackers.add(new Queen(attackerQueenColor, new PositionDto(row-1, col)));
                   continue;
             } 
             String attackerRookColor = GameHelper.getRookColor(character);
-            if (attackerRookColor != playerColor){
+            if (attackerRookColor != null && attackerRookColor != playerColor){
                 attackers.add(new Rook(attackerRookColor, new PositionDto(row-1, col)));
                 continue;
             }
@@ -488,7 +488,8 @@ public class MovementUsecase {
             if (pos.getRow() >= boardSize || pos.getCol() >= boardSize || pos.getRow() < 0 || pos.getCol() < 0){
                 continue;
             }
-            if (GameHelper.getKnightColor(state[pos.getRow()][pos.getCol()]) != playerColor){
+            String knightAttacker = GameHelper.getKnightColor(state[pos.getRow()][pos.getCol()]);
+            if (knightAttacker != null && knightAttacker != playerColor){
                 return new Knight(GameHelper.getPieceColor(state[pos.getRow()][pos.getCol()]), new PositionDto(pos.getRow(), pos.getCol()));
             }
         }
@@ -513,11 +514,13 @@ public class MovementUsecase {
             return null;
         }
 
-        if (GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]) != playerColor){
+        String rightPawnAttacker = GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]);
+        if (rightPawnAttacker != null && rightPawnAttacker != playerColor){
             return new Pawn(GameHelper.getPieceColor(state[position.getRow() - 1][position.getCol() + 1]), new PositionDto(position.getRow() - 1, position.getCol() + 1));
         }
         
-        if (GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]) != playerColor){
+        String leftPawnAttacker = GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]);
+        if (leftPawnAttacker != null && leftPawnAttacker != playerColor){
             return new Pawn(GameHelper.getPieceColor(state[position.getRow() - 1][position.getCol() - 1]), new PositionDto(position.getRow() - 1, position.getCol() - 1));
         }
 
@@ -600,7 +603,9 @@ public class MovementUsecase {
             if (pos.getRow() >= boardSize || pos.getCol() >= boardSize || pos.getRow() < 0 || pos.getCol() < 0){
                 continue;
             }
-            if (GameHelper.getKingColor(state[pos.getRow()][pos.getCol()]) != playerColor){
+
+            String evolvedPawnColor = GameHelper.getEvolvedPawnColor(state[pos.getRow()][pos.getCol()]);
+            if (evolvedPawnColor != null && evolvedPawnColor != playerColor){
                 return new EvolvedPawn(GameHelper.getPieceColor(state[pos.getRow()][pos.getCol()]), pos);
             }
         }

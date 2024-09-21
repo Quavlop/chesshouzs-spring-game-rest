@@ -2,6 +2,7 @@ package com.chesshouzs.server.service.lib.game;
 
 import com.chesshouzs.server.service.lib.interfaces.Character;
 import com.chesshouzs.server.service.lib.usecase.MovementUsecase;
+import com.chesshouzs.server.util.Helper;
 import com.datastax.oss.driver.shaded.guava.common.collect.HashBasedTable;
 import com.datastax.oss.driver.shaded.guava.common.collect.Table;
 
@@ -19,6 +20,7 @@ public class King extends Character{
      
     public King(PositionDto position, String color){
         super(color);
+        this.position = position;
     }
 
     public King(String color){
@@ -92,7 +94,7 @@ public class King extends Character{
 
         ArrayList<Character> attackers = this.getKingThreateningInstances(state);
         Boolean isInCheck = this.isCurrentKingPositionGuarded(state);
-        Table<Integer, Integer, Boolean> invalidKingMoves = HashBasedTable.create();
+        // Table<Integer, Integer, Boolean> invalidKingMoves = HashBasedTable.create();
         Table<Integer, Integer, Boolean> validKingMoves = HashBasedTable.create();
 
 
@@ -103,6 +105,10 @@ public class King extends Character{
             // } else {
             //     validKingMoves.put(position.getRowKey(), position.getColumnKey(), true);
             // }
+            if (position.getRowKey() < 0 || position.getColumnKey() < 0 || position.getRowKey() >= state.length || position.getColumnKey() >= state.length){
+                continue;
+            }
+
             if (!MovementUsecase.isPositionGuarded(new PositionDto(position.getRowKey(), position.getColumnKey()), state, this.color)){
                 validKingMoves.put(position.getRowKey(), position.getColumnKey(), true);
             }
@@ -121,6 +127,7 @@ public class King extends Character{
         ArrayList<Character> attackers = new ArrayList<Character>();
 
         // queen, bishop 
+        System.out.println(Helper.convertObjectToJson(this.position));
         ArrayList<Character> diagonalAttackers = MovementUsecase.getDiagonalAttackerInstances(this.position, state, this.color);
         ArrayList<Character> flatDirectionAttackers = MovementUsecase.getFlatDirectionAttackerInstances(this.position, state, this.color);
         Character knightAttacker = MovementUsecase.getKnightAttackerInstance(this.position, state, this.color);

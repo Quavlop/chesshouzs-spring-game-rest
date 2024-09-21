@@ -1,7 +1,5 @@
 package com.chesshouzs.server.utils;
 
-import java.util.Map;
-
 public class IsValidMoveTestSuite extends TestSuite {
     private String oldStateArg; 
     private String newStateArg; 

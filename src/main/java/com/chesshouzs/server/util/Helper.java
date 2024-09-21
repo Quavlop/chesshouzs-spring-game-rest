@@ -1,7 +1,13 @@
 package com.chesshouzs.server.util;
 
+import com.chesshouzs.server.dto.custom.match.PositionDto;
+import com.datastax.oss.driver.shaded.guava.common.collect.HashBasedTable;
+import com.datastax.oss.driver.shaded.guava.common.collect.Table;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.lettuce.core.StringMatchResult.Position;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,6 +37,16 @@ public class Helper {
         JsonNode objNode2 = mapper.readTree(jsonObj2);
         
         return objNode1.equals(objNode2);
+    }
+
+    public static Table<Integer, Integer, Boolean> generateHashBasedTable(PositionDto ...positions){
+        Table<Integer, Integer, Boolean> table = HashBasedTable.create();
+
+        for (PositionDto pos : positions){
+            table.put(pos.getRow(), pos.getCol(), true);
+        }
+
+        return table;
     }
     
 

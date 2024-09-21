@@ -14,7 +14,7 @@ public class CharacterUsecase {
         for (int row = 0; row < boardSize; row++){
             for (int col = 0; col < boardSize; col++){
                 if (GameHelper.getKingColor(state[row][col]) == color){
-                    return new King(new PositionDto(row, col),color);
+                    return new King(new PositionDto(row, col), color);
                 }
             }
         }

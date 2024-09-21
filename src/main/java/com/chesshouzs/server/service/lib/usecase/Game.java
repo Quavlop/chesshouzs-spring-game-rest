@@ -58,17 +58,17 @@ public class Game {
     }
 
 
-    public static Boolean containsUnknownCharacter(char[][] state){
-        int boardSize = state.length;
+    // public static Boolean containsUnknownCharacter(char[][] state){
+    //     int boardSize = state.length;
 
-        for (int row = 0; row < boardSize; row++){
-            for (int col = 0; col < boardSize; col++){
+    //     for (int row = 0; row < boardSize; row++){
+    //         for (int col = 0; col < boardSize; col++){
 
-            }
-        }
+    //         }
+    //     }
 
-        return false;
-    }   
+    //     return false;
+    // }   
 
     /* 
         returns {   
