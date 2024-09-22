@@ -2,9 +2,11 @@ package com.chesshouzs.server.service.lib.game;
 
 import com.chesshouzs.server.service.lib.interfaces.Character;
 import com.chesshouzs.server.service.lib.usecase.MovementUsecase;
+import com.chesshouzs.server.util.GameHelper;
 import com.chesshouzs.server.util.Helper;
 import com.datastax.oss.driver.shaded.guava.common.collect.HashBasedTable;
 import com.datastax.oss.driver.shaded.guava.common.collect.Table;
+import com.google.rpc.Help;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,8 +77,6 @@ public class King extends Character{
         Boolean evolvedPawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyEvolvedPawn(this.position, state, this.color);
         Boolean enemyKingGuard = MovementUsecase.isPositionCoveredByEnemyKing(this.position, state, this.color);
 
-        System.out.println(longRangeAttackersGuard + " " + knightAttackersGuard + " " + pawnAttackersGuard + " " + evolvedPawnAttackersGuard + " " + enemyKingGuard);
-
         return longRangeAttackersGuard || knightAttackersGuard || pawnAttackersGuard || evolvedPawnAttackersGuard || enemyKingGuard;
     }
 
@@ -99,6 +99,7 @@ public class King extends Character{
 
 
         Table<Integer, Integer, Boolean> eligibleKingMoves = this.getEligibleMoves(state);
+        System.out.println(Helper.convertObjectToJson(eligibleKingMoves.cellSet()));
         for (Table.Cell<Integer, Integer, Boolean> position : eligibleKingMoves.cellSet()){
             // if (MovementUsecase.isPositionGuarded(new PositionDto(position.getRowKey(), position.getColumnKey()), state, this.color)){
             //     invalidKingMoves.put(position.getRowKey(), position.getColumnKey(), true);
@@ -109,10 +110,13 @@ public class King extends Character{
                 continue;
             }
 
-            if (!MovementUsecase.isPositionGuarded(new PositionDto(position.getRowKey(), position.getColumnKey()), state, this.color)){
+            String squarePieceColor = GameHelper.getPieceColor(state[position.getRowKey()][position.getColumnKey()]);
+            if (!MovementUsecase.isPositionGuarded(new PositionDto(position.getRowKey(), position.getColumnKey()), state, this.color) && squarePieceColor != this.color){
                 validKingMoves.put(position.getRowKey(), position.getColumnKey(), true);
             }
         }
+        System.out.println(Helper.convertObjectToJson(validKingMoves.cellSet()));
+
 
         data.put(GameConstants.KEY_ATTACKERS, attackers);
         data.put(GameConstants.KEY_IS_IN_CHECK, isInCheck);

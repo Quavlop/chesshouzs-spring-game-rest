@@ -37,7 +37,6 @@ public class Game {
 
         // map to corresponding class object
         char movingChar = (char)doubleMovementScanResult.get(GameConstants.KEY_CHARACTER);
-        // System.out.println("SLLS" + movingChar);
 
         if (movingChar == '\u0000'){
             data.put(GameConstants.KEY_VALID_MOVE, false);

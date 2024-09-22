@@ -73,7 +73,6 @@ public class MovementUsecase {
 
         String replacedCharColor = GameHelper.getPieceColor(oldState[newPosition.getRow()][newPosition.getCol()]);
         String attackerColor = GameHelper.getPieceColor(oldState[oldPosition.getRow()][oldPosition.getCol()]);
-        System.out.println(replacedCharColor + " " + attackerColor + " WKKWKW");
         return (
             ((rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2))
             && replacedCharColor != attackerColor 
@@ -322,6 +321,7 @@ public class MovementUsecase {
         while (col < boardSize){
             char character = state[row][col++]; 
             if (GameHelper.getFlatDirectionAttackers(character, playerColor)){
+                System.out.println(row + " " + (col-1) + " " + playerColor + " " + GameHelper.getPieceColor(state[row][col-1]));
                 return true;
             }
         }
@@ -329,7 +329,7 @@ public class MovementUsecase {
         // to left 
         row = position.getRow();
         col = position.getCol();
-        while (col > 0){
+        while (col >= 0){
             char character = state[row][col--]; 
             if (GameHelper.getFlatDirectionAttackers(character, playerColor)){
                 return true;
@@ -340,7 +340,7 @@ public class MovementUsecase {
         // to top 
         row = position.getRow();
         col = position.getCol();
-        while (row > 0){
+        while (row >= 0){
             char character = state[row--][col]; 
             if (GameHelper.getFlatDirectionAttackers(character, playerColor)){
                 return true;
@@ -389,7 +389,7 @@ public class MovementUsecase {
         // to left 
         row = position.getRow();
         col = position.getCol();
-        while (col > 0){
+        while (col >= 0){
             char character = state[row][col--]; 
             String attackerQueenColor = GameHelper.getQueenColor(character);
             if (attackerQueenColor != null && attackerQueenColor != playerColor){
@@ -407,7 +407,7 @@ public class MovementUsecase {
         // to top 
         row = position.getRow();
         col = position.getCol();
-        while (row > 0){
+        while (row >= 0){
             char character = state[row--][col]; 
             String attackerQueenColor = GameHelper.getQueenColor(character);
             if (attackerQueenColor != null && attackerQueenColor != playerColor){
@@ -424,8 +424,11 @@ public class MovementUsecase {
         // to bottom
         row = position.getRow();
         col = position.getCol();
+        System.out.println("LENGTH + " + state.length + " " + row + " " + col);
         while (row < boardSize){
+            System.out.println("KCKC " + row);
             char character = state[row++][col]; 
+            System.out.println("KCKC2 " + row);
             String attackerQueenColor = GameHelper.getQueenColor(character);
             if (attackerQueenColor != null && attackerQueenColor != playerColor){
                   attackers.add(new Queen(attackerQueenColor, new PositionDto(row-1, col)));
@@ -499,29 +502,75 @@ public class MovementUsecase {
 
     public static Boolean isPositionCoveredByEnemyPawn(PositionDto position, char[][] state, String playerColor){
         int boardSize = state.length;
-        if (position.getRow() - 1 >= boardSize || position.getCol() + 1 >= boardSize || position.getRow() - 1 < 0 || position.getCol() + 1 < 0){
+        // if (position.getRow() - 1 >= boardSize || position.getCol() + 1 >= boardSize || position.getCol() - 1 < 0 || position.getRow() - 1 < 0 || position.getCol() + 1 < 0 || position.getCol() - 1 >= boardSize){
+            // return false;
+        // }
+        // return 
+        //     (GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]) != null && GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]) != playerColor) 
+        //     || 
+        //     (GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]) != null && GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]) != playerColor);
+
+
+        if (position.getRow() - 1 >= boardSize || position.getRow() - 1 < 0){
             return false;
         }
-        return GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]) != null || GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]) != null;
+
+        if (position.getCol() + 1 >= boardSize && position.getCol() - 1 < boardSize && position.getCol() - 1 >= 0){
+            return GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]) != null && GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]) != playerColor;
+        }
+
+        if (position.getCol() - 1 < 0 && position.getCol() + 1 >= 0 && position.getCol() + 1 < boardSize){
+            return GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]) != null && GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]) != playerColor;
+        }
+
+        // if (position.getCol() + 1 < boardSize && position.getCol() + 1 >= 0){
+        // }
+
+        // if (position.getCol() - 1 < boardSize && position.getCol() - 1 >= 0){
+        // }
+
+        return (GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]) != null && GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]) != playerColor) || (GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]) != null && GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]) != playerColor);
     }
 
     // for pawn, we do not use array to get knight attackers because it is not possible to have multiple pawn attackers.
     public static Character getPawnAttackerInstance(PositionDto position, char[][] state, String playerColor){
         int boardSize = state.length;
         
-        // index out of bounds
-        if (position.getRow() - 1 >= boardSize || position.getCol() + 1 >= boardSize || position.getRow() - 1 < 0 || position.getCol() + 1 < 0){
+        // index out of bounds check
+        // if (position.getRow() - 1 >= boardSize || position.getCol() + 1 >= boardSize || position.getCol() - 1 < 0 || position.getRow() - 1 < 0 || position.getCol() + 1 < 0 || position.getCol() - 1 >= boardSize){
+        //     return null;
+        // }
+
+        if (position.getRow() - 1 >= boardSize || position.getRow() - 1 < 0){
             return null;
+        }        
+
+        if (position.getCol() - 1 < 0 && position.getCol() + 1 >= 0 && position.getCol() + 1 < boardSize){
+            String rightPawnAttacker = GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]);
+            if (rightPawnAttacker != null && rightPawnAttacker != playerColor){
+                return new Pawn(GameHelper.getPieceColor(state[position.getRow() - 1][position.getCol() + 1]), new PositionDto(position.getRow() - 1, position.getCol() + 1));
+            }
         }
 
-        String rightPawnAttacker = GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]);
-        if (rightPawnAttacker != null && rightPawnAttacker != playerColor){
-            return new Pawn(GameHelper.getPieceColor(state[position.getRow() - 1][position.getCol() + 1]), new PositionDto(position.getRow() - 1, position.getCol() + 1));
-        }
-        
-        String leftPawnAttacker = GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]);
-        if (leftPawnAttacker != null && leftPawnAttacker != playerColor){
-            return new Pawn(GameHelper.getPieceColor(state[position.getRow() - 1][position.getCol() - 1]), new PositionDto(position.getRow() - 1, position.getCol() - 1));
+        if (position.getCol() + 1 >= boardSize && position.getCol() - 1 < boardSize && position.getCol() - 1 >= 0){
+            String leftPawnAttacker = GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]);
+            if (leftPawnAttacker != null && leftPawnAttacker != playerColor){
+                return new Pawn(GameHelper.getPieceColor(state[position.getRow() - 1][position.getCol() - 1]), new PositionDto(position.getRow() - 1, position.getCol() - 1));
+            }            
+        }        
+
+        if (position.getCol() + 1 < boardSize && position.getCol() + 1 >= 0){
+            String rightPawnAttacker = GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() + 1]);
+            if (rightPawnAttacker != null && rightPawnAttacker != playerColor){
+                return new Pawn(GameHelper.getPieceColor(state[position.getRow() - 1][position.getCol() + 1]), new PositionDto(position.getRow() - 1, position.getCol() + 1));
+            }  
+        }      
+
+        if (position.getCol() - 1 < boardSize && position.getCol() - 1 >= 0){
+            String leftPawnAttacker = GameHelper.getPawnColor(state[position.getRow() - 1][position.getCol() - 1]);
+            if (leftPawnAttacker != null && leftPawnAttacker != playerColor){
+                return new Pawn(GameHelper.getPieceColor(state[position.getRow() - 1][position.getCol() - 1]), new PositionDto(position.getRow() - 1, position.getCol() - 1));
+            }        
         }
 
         return null;
@@ -577,7 +626,10 @@ public class MovementUsecase {
             }
 
             String evolvedPawnColor = GameHelper.getEvolvedPawnColor(state[pos.getRow()][pos.getCol()]);
+            System.out.println(evolvedPawnColor + " " + pos.getRow() + " " + pos.getCol() + " " + playerColor);
             if (evolvedPawnColor != null && evolvedPawnColor != playerColor){
+                System.out.println("WKWKWK");
+                System.out.println(evolvedPawnColor + " " + pos.getRow() + " " + pos.getCol() + " " + playerColor + " Wp");
                 return true;
             }
         }
@@ -589,14 +641,14 @@ public class MovementUsecase {
         int boardSize = state.length;
         List<BiFunction<Integer, Integer, PositionDto>> enemyEvolvedPawnAttackList = new ArrayList<>();
 
-        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row + 2, col + 1));
-        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row + 2, col - 1));
-        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row - 2, col + 1));
-        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row - 2, col - 1));
-        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row + 1, col + 2));
-        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row + 1, col - 2));
-        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row - 1, col + 2));
-        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row - 1, col - 2));
+        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row + 1, col + 1));
+        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row + 1, col - 1));
+        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row - 1, col + 1));
+        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row - 1, col - 1));
+        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row + 1, col));
+        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row - 1, col));
+        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row, col + 1));
+        enemyEvolvedPawnAttackList.add((row, col) -> new PositionDto(row, col - 1));
 
         for (BiFunction<Integer, Integer, PositionDto> validator : enemyEvolvedPawnAttackList){
             PositionDto pos = validator.apply(position.getRow(), position.getCol());
@@ -648,6 +700,7 @@ public class MovementUsecase {
         Boolean pawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyPawn(position, state, playerColor);
         Boolean evolvedPawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyEvolvedPawn(position, state, playerColor);
         Boolean enemyKingGuard = MovementUsecase.isPositionCoveredByEnemyKing(position, state, playerColor);
+        System.out.println(evolvedPawnAttackersGuard + " EREs");
         return longRangeAttackersGuard || knightAttackersGuard || pawnAttackersGuard || evolvedPawnAttackersGuard || enemyKingGuard;
     }
 

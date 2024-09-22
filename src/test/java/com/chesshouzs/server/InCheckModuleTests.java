@@ -1,19 +1,26 @@
 package com.chesshouzs.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.PropertySource.Comparator;
 import org.aspectj.weaver.Position;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.chesshouzs.server.constants.GameConstants;
 import com.chesshouzs.server.dto.custom.match.PositionDto;
+import com.chesshouzs.server.service.lib.game.Bishop;
+import com.chesshouzs.server.service.lib.game.EvolvedPawn;
 import com.chesshouzs.server.service.lib.game.King;
+import com.chesshouzs.server.service.lib.game.Knight;
+import com.chesshouzs.server.service.lib.game.Pawn;
 import com.chesshouzs.server.service.lib.game.Queen;
+import com.chesshouzs.server.service.lib.game.Rook;
 import com.chesshouzs.server.service.lib.interfaces.Character;
 import com.chesshouzs.server.service.lib.usecase.CharacterUsecase;
 import com.chesshouzs.server.service.lib.usecase.Game;
@@ -33,7 +40,7 @@ public class InCheckModuleTests {
 
             // POSITIVE CASE : regular single attacks
             new InCheckTestSuite(
-                "POSITIVE CASE : king is in check and got attacked with one rook (single attacker)", 
+                "POSITIVE CASE : king is in check and got attacked horizontally with one queen (single attacker)", 
                 "..............|..............|..Q..........k|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
                 GameConstants.BLACK_COLOR,
                 true, 
@@ -46,13 +53,330 @@ public class InCheckModuleTests {
                     new PositionDto(3,12),
                     new PositionDto(3,13)
                 )
-            )
+            ), 
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked horizontally with one queen (single attacker) (2)", 
+                "..............|..............|..Q.........k.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Queen(GameConstants.WHITE_COLOR, new PositionDto(2, 2)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,11),
+                    new PositionDto(1,12),
+                    new PositionDto(1,13),
+                    new PositionDto(3,11),
+                    new PositionDto(3,12),
+                    new PositionDto(3,13)
+                )
+            ),             
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked vertically with one queen and friend near king (single attacker)", 
+                "..............|..............|KR............|..............|..............|q.............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Queen(GameConstants.BLACK_COLOR, new PositionDto(5, 0)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,1),
+                    new PositionDto(3,1)
+                )
+            ), 
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked vertically with one rook and unthreatening enemy near king (single attacker)", 
+                "..............|..............|Kn............|..............|..............|r.............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Rook(GameConstants.BLACK_COLOR, new PositionDto(5, 0)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,1),
+                    new PositionDto(2,1),
+                    new PositionDto(3,1)
+                )
+            ), 
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked vertically with one bishop and threatening rook blocking several squares near king (single attacker)", 
+                ".....R........|..............|....k.........|..............|......B.......|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Bishop(GameConstants.WHITE_COLOR, new PositionDto(4, 6)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,4),
+                    new PositionDto(2,3),
+                    new PositionDto(3,3),
+                    new PositionDto(3,4)
+                )
+            ), 
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked vertically with one bishop and threatening rook blocking several squares near king (single attacker) (2)", 
+                "..............|.....R........|....k.........|..............|......B.......|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Bishop(GameConstants.WHITE_COLOR, new PositionDto(4, 6)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(2,3),
+                    new PositionDto(3,3),
+                    new PositionDto(3,4)
+                )
+            ), 
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by knight with threatening evolved pawn several squares nearby", 
+                "..............|........N.....|....E.k.......|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Knight(GameConstants.WHITE_COLOR, new PositionDto(1, 8)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,6),
+                    new PositionDto(1,7),
+                    new PositionDto(2,7),
+                    new PositionDto(3,6)
+                )
+            ), 
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by evolved pawn", 
+                "..............|...e..........|..K...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new EvolvedPawn(GameConstants.BLACK_COLOR, new PositionDto(1, 3)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,1),
+                    new PositionDto(1,3),
+                    new PositionDto(2,1),
+                    new PositionDto(3,1),
+                    new PositionDto(3,2), 
+                    new PositionDto(3,3)
+
+                )
+            ),   
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by evolved pawn, but evolved pawn is covered by enemy king", 
+                "..............|...ek.........|..K...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new EvolvedPawn(GameConstants.BLACK_COLOR, new PositionDto(1, 3)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,1),
+                    new PositionDto(2,1),
+                    new PositionDto(3,1),
+                    new PositionDto(3,2), 
+                    new PositionDto(3,3)
+                )
+            ),   
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by evolved pawn, but evolved pawn is covered by enemy pawn", 
+                "....p.........|...e..........|..K...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new EvolvedPawn(GameConstants.BLACK_COLOR, new PositionDto(1, 3)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,1),
+                    new PositionDto(2,1),
+                    new PositionDto(3,1),
+                    new PositionDto(3,2), 
+                    new PositionDto(3,3)
+                )
+            ),   
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by evolved pawn, but evolved pawn is covered by enemy pawn (2)", 
+                "..p...........|...e..........|..K...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new EvolvedPawn(GameConstants.BLACK_COLOR, new PositionDto(1, 3)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(2,1),
+                    new PositionDto(3,1),
+                    new PositionDto(3,2), 
+                    new PositionDto(3,3)
+                )
+            ),       
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by evolved pawn, but evolved pawn is covered by enemy king", 
+                "..k...........|...e..........|..K...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new EvolvedPawn(GameConstants.BLACK_COLOR, new PositionDto(1, 3)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(2,1),
+                    new PositionDto(3,1),
+                    new PositionDto(3,2), 
+                    new PositionDto(3,3)
+                )
+            ),      
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by evolved pawn (2)", 
+                "k.............|...e..........|..K...........|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new EvolvedPawn(GameConstants.BLACK_COLOR, new PositionDto(1, 3)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,3),
+                    new PositionDto(2,1),
+                    new PositionDto(3,1),
+                    new PositionDto(3,2), 
+                    new PositionDto(3,3)
+                )
+            ),
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by pawn", 
+                "..............|............PN|.............k|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Pawn(GameConstants.WHITE_COLOR, new PositionDto(1, 12)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,12),
+                    new PositionDto(1,13),
+                    new PositionDto(2,12),
+                    new PositionDto(3,13)
+                )
+            ),             
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by pawn (2)", 
+                "..............|.....P........|......k.......|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Pawn(GameConstants.WHITE_COLOR, new PositionDto(1, 5)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,5),
+                    new PositionDto(1,6),
+                    new PositionDto(1,7),
+                    new PositionDto(2,5),
+                    new PositionDto(2,7),
+                    new PositionDto(3,5),
+                    new PositionDto(3,6),
+                    new PositionDto(3,7)                    
+                )
+            ),  
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by pawn (3)", 
+                "..............|.......p......|......K.......|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.WHITE_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Pawn(GameConstants.BLACK_COLOR, new PositionDto(1, 7)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(1,5),
+                    new PositionDto(1,6),
+                    new PositionDto(1,7),
+                    new PositionDto(2,5),
+                    new PositionDto(2,7),
+                    new PositionDto(3,5),
+                    new PositionDto(3,6),
+                    new PositionDto(3,7)                    
+                )
+            ),  
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by pawn (4)", 
+                ".P...........P|k.............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Pawn(GameConstants.WHITE_COLOR, new PositionDto(0, 1)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(0,0),
+                    new PositionDto(0,1),
+                    new PositionDto(1,1),
+                    new PositionDto(2,0),
+                    new PositionDto(2,1)
+                )
+            ),   
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by pawn (5)", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|............P.|.............k|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Pawn(GameConstants.WHITE_COLOR, new PositionDto(12, 12)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(12,12),
+                    new PositionDto(12,13),
+                    new PositionDto(13,12)
+                )
+            ),
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by pawn (6)", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|.P............|k.............|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Pawn(GameConstants.WHITE_COLOR, new PositionDto(12, 1)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(12,0),
+                    new PositionDto(12,1),
+                    new PositionDto(13,1)
+                )
+            ),                                  
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by pawn (7)", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..P...........|...k..........|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Pawn(GameConstants.WHITE_COLOR, new PositionDto(12, 2)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(12,2),
+                    new PositionDto(12,3),
+                    new PositionDto(12,4),
+                    new PositionDto(13,2),
+                    new PositionDto(13,4)
+                )
+            ),  
+            new InCheckTestSuite(
+                "POSITIVE CASE : king is in check and got attacked by pawn (8)", 
+                "..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|.....P........|....P.........|...k..........|", 
+                GameConstants.BLACK_COLOR,
+                true, 
+                new ArrayList<Character>(){{
+                    add(new Pawn(GameConstants.WHITE_COLOR, new PositionDto(12, 4)));
+                }},                 
+                Helper.generateHashBasedTable(
+                    new PositionDto(12,2),
+                    new PositionDto(12,3),
+                    new PositionDto(13,2),
+                    new PositionDto(13,4)
+                )
+            ),                           
+                                                                                                          
+            // POSITIVE CASE : discovered check (double attacker)                                                           
+
+            // NEGATIVE CASE : inline with rook / queen (teammate)
             
 
         };        
 
         int countFail = 0;
         for (InCheckTestSuite test : tests){
+            System.out.println("\n" + test.getName());
             char[][] stateToArr = GameHelper.convertNotationToArray(test.getState());
 
             King king = CharacterUsecase.findKing(stateToArr, test.getPlayerColor());
@@ -65,6 +389,18 @@ public class InCheckModuleTests {
             );
 
             Map<String, Object> result = king.inCheckStatus(stateToArr);
+
+            Boolean resultIsInCheck = (Boolean)result.get(GameConstants.KEY_IS_IN_CHECK); 
+            assertEquals(
+                test.getExpectedIsInCheck(), 
+                resultIsInCheck, 
+                String.format(
+                    "[FAILED TEST] InCheckModuleTests.InCheckStatusTest, king check status does not match : %s\nExpected: %s\nActual: %s", 
+                    test.getName(),  
+                    test.getExpectedIsInCheck(), 
+                    resultIsInCheck
+                )
+            );
 
             ArrayList<Character> resultAttackers = (ArrayList<Character>)result.get(GameConstants.KEY_ATTACKERS);
             assertEquals(
@@ -82,6 +418,18 @@ public class InCheckModuleTests {
                 if (!isComparisonResultEqual){
                     countFail += 1;
                 }
+
+                assertInstanceOf(
+                    test.getExpectedAttackers().get(i).getClass(), 
+                    resultAttackers.get(i), 
+                    String.format(
+                        "[FAILED TEST] InCheckModuleTests.InCheckStatusTest, attacker type does not match : %s\nExpected: %s\nActual: %s", 
+                        test.getName(), 
+                        test.getExpectedAttackers().get(i).getClass(), 
+                        resultAttackers.get(i).getClass()
+                    )
+                );
+
                 assertEquals(
                     isComparisonResultEqual,
                     true,
@@ -93,19 +441,6 @@ public class InCheckModuleTests {
                     )
                 );
             }    
-
-            Boolean resultIsInCheck = (Boolean)result.get(GameConstants.KEY_IS_IN_CHECK); 
-            assertEquals(
-                test.getExpectedIsInCheck(), 
-                resultIsInCheck, 
-                String.format(
-                    "[FAILED TEST] InCheckModuleTests.InCheckStatusTest, king check status does not match : %s\nExpected: %s\nActual: %s", 
-                    test.getName(),  
-                    test.getExpectedIsInCheck(), 
-                    resultIsInCheck
-                )
-            );
-
 
             Table<Integer, Integer, Boolean> resultValidMoves = (Table<Integer, Integer, Boolean>)result.get(GameConstants.KEY_VALID_MOVES);
             assertEquals(

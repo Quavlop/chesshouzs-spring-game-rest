@@ -230,14 +230,13 @@ public class GameHelper {
     public static Boolean getDiagonalAttackers(char ch, String playerColor){
         String queenColor = getQueenColor(ch);
         String bishopColor = getBishopColor(ch);
-        // System.out.println(playerColor + " " + queenColor + " " + bishopColor + " " + (queenColor != null || bishopColor != null) + " " + (queenColor != playerColor || bishopColor != playerColor));
-        return (queenColor != playerColor || bishopColor != playerColor) && (queenColor != null || bishopColor != null);
+        return  (queenColor != null && queenColor != playerColor) || (bishopColor != null && bishopColor != playerColor);
     }
 
     public static Boolean getFlatDirectionAttackers(char ch, String playerColor){
         String queenColor = getQueenColor(ch);
         String rookColor = getRookColor(ch);
-        return (queenColor != playerColor || rookColor != playerColor) && (queenColor != null || rookColor != null);
+        return  (queenColor != null && queenColor != playerColor) || (rookColor != null && rookColor != playerColor);
     }
 
     public static String getRedisGameMoveKey(String ref){
