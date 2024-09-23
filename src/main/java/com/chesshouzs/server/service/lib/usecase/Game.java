@@ -83,6 +83,8 @@ public class Game {
         Map<String, Object> data = new HashMap<String, Object>();
 
         int boardSize = oldState.length;
+        int blackKingCount = 0;
+        int whiteKingCount = 0;
         
         // check row dimension
         if (boardSize <= 0 || boardSize != GameConstants.boardSize){
@@ -109,6 +111,13 @@ public class Game {
 
         for (int row = 0; row < boardSize; row++){
             for (int col = 0; col < boardSize; col++){
+
+                // if (GameHelper.getKingColor(newState[row][col]) == GameConstants.BLACK_COLOR){
+                //     blackKingCount++;
+                // } else if (GameHelper.getKingColor(newState[row][col]) == GameConstants.WHITE_COLOR){
+                //     whiteKingCount++;
+                // }                
+
                 // check if board contains invalid characters;
                 if (!validCharacters.containsKey(java.lang.Character.valueOf(newState[row][col])) || !validCharacters.containsKey(java.lang.Character.valueOf(oldState[row][col]))){
                     data.put(GameConstants.KEY_INVALID, true);
@@ -148,7 +157,7 @@ public class Game {
             }
         }
 
-
+        // TODO FARREL : check king count on before rpc call
         if (movingChar == GameConstants.NONCHARACTER_EMPTY || movingChar == GameConstants.NONCHARACTER_WALL || (PositionDto)data.get(GameConstants.KEY_OLD_POSITION) == null || (PositionDto)data.get(GameConstants.KEY_NEW_POSITION) == null){
             data.put(GameConstants.KEY_INVALID, true);
             data.put(GameConstants.KEY_IS_DOUBLE, false);

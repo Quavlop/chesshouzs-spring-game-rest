@@ -332,7 +332,19 @@ public class MoveValidationModuleTests {
                     put(GameConstants.KEY_OLD_POSITION, null);
                     put(GameConstants.KEY_NEW_POSITION, null);
                 }}
-            ),                                      
+            ),    
+            new DoubleMovementScanResultTestSuite(
+                "NEGATIVE CASE : contains invalid character (4)", 
+                "asasdsaas",
+                ".asdajdsljdsaldjakasklas",
+                new HashMap<String, Object>(){{
+                    put(GameConstants.KEY_INVALID, true); 
+                    put(GameConstants.KEY_IS_DOUBLE, false); 
+                    put(GameConstants.KEY_CHARACTER, '\u0000');
+                    put(GameConstants.KEY_OLD_POSITION, null);
+                    put(GameConstants.KEY_NEW_POSITION, null);
+                }}
+            ),                                              
         };
 
         int countFail = 0;

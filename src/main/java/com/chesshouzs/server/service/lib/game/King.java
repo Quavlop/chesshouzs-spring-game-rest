@@ -99,8 +99,6 @@ public class King extends Character{
 
 
         Table<Integer, Integer, Boolean> eligibleKingMoves = this.getEligibleMoves(state);
-        System.out.println("LMOAOAOAO");
-        System.out.println(Helper.convertObjectToJson(eligibleKingMoves.cellSet()));
         for (Table.Cell<Integer, Integer, Boolean> position : eligibleKingMoves.cellSet()){
             // if (MovementUsecase.isPositionGuarded(new PositionDto(position.getRowKey(), position.getColumnKey()), state, this.color)){
             //     invalidKingMoves.put(position.getRowKey(), position.getColumnKey(), true);
@@ -116,7 +114,6 @@ public class King extends Character{
                 validKingMoves.put(position.getRowKey(), position.getColumnKey(), true);
             }
         }
-        System.out.println(Helper.convertObjectToJson(validKingMoves.cellSet()));
 
 
         data.put(GameConstants.KEY_ATTACKERS, attackers);

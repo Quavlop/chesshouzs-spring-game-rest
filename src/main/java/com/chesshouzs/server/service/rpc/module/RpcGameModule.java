@@ -40,8 +40,12 @@ public class RpcGameModule {
         // if new king position is in check, then of course movement is invalid 
         // this covers the needs of pinned piece validation
         King newKingPosition = CharacterUsecase.findKing(oldState, character.getColor());        
-        Map<String, Object> newInCheckStatus = newKingPosition.inCheckStatus(newState);
-        if ((Boolean)newInCheckStatus.get(GameConstants.KEY_IS_IN_CHECK)){
+        if (newKingPosition == null){
+            return false;
+        }
+        Boolean newInCheckStatus = newKingPosition.isCurrentKingPositionGuarded(newState);
+        System.out.println("LEELLLLL " + newInCheckStatus);
+        if (newInCheckStatus){
             return false;
         }
         
@@ -84,7 +88,7 @@ public class RpcGameModule {
                 // PositionDto newMovingCharacterPosition = character.getPosition();            
 
                 if (attackers.size() <= 0){
-                    return false;
+                    return true;
                 }   
 
                 Character attackerObj = null;
@@ -96,9 +100,9 @@ public class RpcGameModule {
                 if (attackerObj != null && !character.isAbleToEliminateCheckThreat(attackerObj, king.getPosition(), oldState)){
                     return false;
                 }
-            } else {
-                // if king still have valid moves and decides to eliminate the attacker (blocking is not possible)
-            }
+            } 
+            // rest if king still have valid moves and decides to eliminate the attacker (blocking is not possible)
+            // implemented in check of king is new position guarded above
         }
 
         // TODO : stalemate
