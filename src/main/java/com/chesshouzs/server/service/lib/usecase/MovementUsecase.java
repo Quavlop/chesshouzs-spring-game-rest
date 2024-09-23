@@ -19,6 +19,7 @@ import com.chesshouzs.server.service.lib.game.Queen;
 import com.chesshouzs.server.service.lib.game.Rook;
 import com.chesshouzs.server.service.lib.interfaces.Character;
 import com.chesshouzs.server.util.GameHelper;
+import com.chesshouzs.server.util.Helper;
 
 import io.lettuce.core.StringMatchResult.Position;
 
@@ -190,8 +191,8 @@ public class MovementUsecase {
         // to bottom right
         int row = position.getRow(); 
         int col = position.getCol();
-        while (row < boardSize && col < boardSize){
-            char character = state[row++][col++]; 
+        while (row < boardSize - 1 && col < boardSize - 1){
+            char character = state[++row][++col]; 
             if (GameHelper.getDiagonalAttackers(character, playerColor)){
                 return true;
             }
@@ -200,8 +201,8 @@ public class MovementUsecase {
         // to bottom left
         row = position.getRow(); 
         col = position.getCol();
-        while (row < boardSize && col >= 0){
-            char character = state[row++][col--]; 
+        while (row < boardSize - 1 && col > 0){
+            char character = state[++row][--col]; 
             if (GameHelper.getDiagonalAttackers(character, playerColor)){
                 return true;
             }
@@ -210,8 +211,8 @@ public class MovementUsecase {
         // to top right
         row = position.getRow(); 
         col = position.getCol();
-        while (row >= 0 && col < boardSize){
-            char character = state[row--][col++]; 
+        while (row > 0 && col < boardSize - 1){
+            char character = state[--row][++col]; 
             if (GameHelper.getDiagonalAttackers(character, playerColor)){
                 return true;
             }
@@ -219,8 +220,8 @@ public class MovementUsecase {
         // to top left
         row = position.getRow(); 
         col = position.getCol();
-        while (row >= 0 && col >= 0){
-            char character = state[row--][col--]; 
+        while (row > 0 && col > 0){
+            char character = state[--row][--col]; 
             if (GameHelper.getDiagonalAttackers(character, playerColor)){
                 return true;
             }
@@ -318,8 +319,8 @@ public class MovementUsecase {
         // to right
         int row = position.getRow(); 
         int col = position.getCol();
-        while (col < boardSize){
-            char character = state[row][col++]; 
+        while (col < boardSize - 1){
+            char character = state[row][++col]; 
             if (GameHelper.getFlatDirectionAttackers(character, playerColor)){
                 System.out.println(row + " " + (col-1) + " " + playerColor + " " + GameHelper.getPieceColor(state[row][col-1]));
                 return true;
@@ -329,8 +330,8 @@ public class MovementUsecase {
         // to left 
         row = position.getRow();
         col = position.getCol();
-        while (col >= 0){
-            char character = state[row][col--]; 
+        while (col > 0){
+            char character = state[row][--col]; 
             if (GameHelper.getFlatDirectionAttackers(character, playerColor)){
                 return true;
             }
@@ -340,8 +341,8 @@ public class MovementUsecase {
         // to top 
         row = position.getRow();
         col = position.getCol();
-        while (row >= 0){
-            char character = state[row--][col]; 
+        while (row > 0){
+            char character = state[--row][col]; 
             if (GameHelper.getFlatDirectionAttackers(character, playerColor)){
                 return true;
             }
@@ -350,8 +351,8 @@ public class MovementUsecase {
         // to bottom
         row = position.getRow();
         col = position.getCol();
-        while (row < boardSize){
-            char character = state[row++][col]; 
+        while (row < boardSize - 1){
+            char character = state[++row][col]; 
             if (GameHelper.getFlatDirectionAttackers(character, playerColor)){
                 return true;
             }
@@ -700,7 +701,8 @@ public class MovementUsecase {
         Boolean pawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyPawn(position, state, playerColor);
         Boolean evolvedPawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyEvolvedPawn(position, state, playerColor);
         Boolean enemyKingGuard = MovementUsecase.isPositionCoveredByEnemyKing(position, state, playerColor);
-        System.out.println(evolvedPawnAttackersGuard + " EREs");
+        System.out.println("LL " + Helper.convertObjectToJson(position));
+        System.out.println(longRangeAttackersGuard + " EREsX");
         return longRangeAttackersGuard || knightAttackersGuard || pawnAttackersGuard || evolvedPawnAttackersGuard || enemyKingGuard;
     }
 
