@@ -97,9 +97,9 @@ public class RpcGameModule {
                 } 
 
                 // if moving character new movement is not eliminating the threat then it is invalid
-                if (attackerObj != null && !character.isAbleToEliminateCheckThreat(attackerObj, king.getPosition(), oldState)){
-                    return false;
-                }
+                // if (attackerObj != null && !character.isAbleToEliminateCheckThreat(attackerObj, king.getPosition(), oldState)){
+                //     return false;
+                // }
             } 
             // rest if king still have valid moves and decides to eliminate the attacker (blocking is not possible)
             // implemented in check of king is new position guarded above

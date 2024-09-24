@@ -76,6 +76,7 @@ public class King extends Character{
         Boolean pawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyPawn(this.position, state, this.color);
         Boolean evolvedPawnAttackersGuard = MovementUsecase.isPositionCoveredByEnemyEvolvedPawn(this.position, state, this.color);
         Boolean enemyKingGuard = MovementUsecase.isPositionCoveredByEnemyKing(this.position, state, this.color);
+        // System.out.println("SKIBIDI " + longRangeAttackersGuard + " " + knightAttackersGuard + " " + pawnAttackersGuard + " " + evolvedPawnAttackersGuard + " " + enemyKingGuard);
 
         return longRangeAttackersGuard || knightAttackersGuard || pawnAttackersGuard || evolvedPawnAttackersGuard || enemyKingGuard;
     }
