@@ -220,15 +220,22 @@ public class RestMatchService {
             throw new Exception("Match state not found");
         }
 
-        String state = notation.get("move");
-        char [][] oldStateToArr = GameHelper.convertNotationToArray(state);
+        String oldState = notation.get("move");
+        char [][] oldStateToArr = GameHelper.convertNotationToArray(oldState);
         if (matchData.getBlackPlayer().getId().equals(userId)){
             oldStateToArr = GameHelper.transformBoard(oldStateToArr);
         }
-        state = GameHelper.convertArrayToNotation(oldStateToArr);
+        oldState = GameHelper.convertArrayToNotation(oldStateToArr);
+
+        String newState = params.getState();
+        char [][] newStateToArr = GameHelper.convertNotationToArray(newState);
+        if (matchData.getBlackPlayer().getId().equals(userId)){
+            newStateToArr = GameHelper.transformBoard(oldStateToArr);
+        }
+        newState = GameHelper.convertArrayToNotation(newStateToArr);
 
 
-        Boolean validMove = rpcGameModule.validateMovement(state, params.getState());
+        Boolean validMove = rpcGameModule.validateMovement(oldState, newState);
         if (!validMove){
             throw new Exception("Invalid move");
         }

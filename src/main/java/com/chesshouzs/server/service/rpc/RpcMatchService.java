@@ -49,7 +49,14 @@ public class RpcMatchService extends MatchServiceGrpc.MatchServiceImplBase {
                                 - new move must kill the attacker OR block the attack
         */
 
+        System.out.println("OLD STATE ");
+        System.out.println(request.getOldState()); 
+        System.out.println(request.getOldState().length()); 
+        System.out.println("NEW STATE ");
+        System.out.println(request.getNewState());
+        System.out.println(request.getNewState().length()); 
         Boolean isValid = rpcGameModule.validateMovement(request.getOldState(),request.getNewState());
+        System.out.println(isValid);
 
         // setup response
         ValidateMoveResp response = ValidateMoveResp.newBuilder()

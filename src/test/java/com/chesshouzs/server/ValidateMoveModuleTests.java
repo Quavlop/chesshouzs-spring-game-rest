@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.chesshouzs.server.service.rpc.module.RpcGameModule;
-import com.chesshouzs.server.util.Helper;
 import com.chesshouzs.server.utils.ValidateMoveTestSuite;
 
 public class ValidateMoveModuleTests {
@@ -38,7 +37,43 @@ public class ValidateMoveModuleTests {
                 "........k..r.Q|............r.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
                 "........k...rQ|............r.|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|..............|", 
                 true
-            ),            
+            ),           
+            new ValidateMoveTestSuite(
+                "POSITIVE CASE : valid move (3-1)", 
+                "|RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..............|pppppppppppppp|ppnbpprrppbnpp|rnbnbnqknbnbnr", 
+                "|RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..........n...|pppppppppppppp|ppnbpprrppb.pp|rnbnbnqknbnbnr", 
+                true
+            ),   
+            new ValidateMoveTestSuite(
+                "POSITIVE CASE : valid move (3-2)", 
+                "RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..............|pppppppppppppp|ppnbpprrppbnpp|rnbnbnqknbnbnr|", 
+                "RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..........n...|pppppppppppppp|ppnbpprrppb.pp|rnbnbnqknbnbnr|", 
+                true
+            ),   
+            new ValidateMoveTestSuite(
+                "POSITIVE CASE : valid move (3-3)", 
+                "|RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..............|pppppppppppppp|ppnbpprrppbnpp|rnbnbnqknbnbnr|", 
+                "|RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..........n...|pppppppppppppp|ppnbpprrppb.pp|rnbnbnqknbnbnr|", 
+                true
+            ),   
+            new ValidateMoveTestSuite(
+                "POSITIVE CASE : valid move (3-4)", 
+                "RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..............|pppppppppppppp|ppnbpprrppbnpp|rnbnbnqknbnbnr", 
+                "RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..........n...|pppppppppppppp|ppnbpprrppb.pp|rnbnbnqknbnbnr", 
+                true
+            ),   
+            new ValidateMoveTestSuite(
+                "POSITIVE CASE : valid move (3-5)", 
+                "|RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..............|pppppppppppppp|ppnbpprrppbnpp|rnbnbnqknbnbnr", 
+                "|RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..........n...|pppppppppppppp|ppnbpprrppb.pp|rnbnbnqknbnbnr", 
+                true
+            ),        
+            new ValidateMoveTestSuite(
+                "POSITIVE CASE : valid move (3-6)", 
+                "|RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|..............|..............|pppppppppppppp|ppnbpprrppbnpp|rnbnbnqknbnbnr", 
+                "|RNBNBNQKNBNBNR|PPNBPPRRPPBNPP|PPPPPP.PPPPPPP|..............|......P.......|..............|..............|..............|..............|...........p..|..............|ppppppppppp.pp|ppnbpprrppbnpp|rnbnbnqknbnbnr", 
+                true
+            ),                                                     
             
             // NEGATIVE CASE
             new ValidateMoveTestSuite(

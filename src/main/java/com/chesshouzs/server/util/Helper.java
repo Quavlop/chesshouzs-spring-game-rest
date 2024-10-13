@@ -27,6 +27,18 @@ public class Helper {
         }
     }
 
+    public static String formatGameNotation(String input) {
+        if (input.startsWith("|")) {
+            input = input.substring(1);
+        }
+        
+        if (!input.endsWith("|")) {
+            input = input + "|";
+        }
+
+        return input;
+    }
+
     public static Boolean compareJson(Object obj1, Object obj2) throws Exception {
 
         String jsonObj1 = convertObjectToJson(obj1); 
@@ -47,6 +59,29 @@ public class Helper {
         }
 
         return table;
+    }
+
+    public static String preprocessStateNotation(String stateNotation){
+        stateNotation = stateNotation.trim().replace("\0", "");
+        System.out.println("FIRST LETTER : " + stateNotation.charAt(0));
+        System.out.println("SECOND LETTER : " + stateNotation.charAt(1));
+
+        for (int i = 0; i < stateNotation.length(); i++){
+            char ch = stateNotation.charAt(i);
+            System.out.println(i + " : " + ch + " (ASCII: " + (int)ch + ")");
+        }
+
+        if (stateNotation.startsWith("|")) {
+            System.out.println("Removing");
+            stateNotation = stateNotation.substring(1);
+            System.out.println("Result : " + stateNotation);
+        } else {
+            System.out.println("KMAAOOOO");
+        }
+        if (!stateNotation.endsWith("|")) {
+            stateNotation += "|";
+        }
+        return stateNotation;        
     }
     
 
