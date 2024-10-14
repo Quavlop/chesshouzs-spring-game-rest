@@ -42,6 +42,7 @@ import com.chesshouzs.server.repository.GameSkillRepository;
 import com.chesshouzs.server.repository.RedisBaseRepository;
 import com.chesshouzs.server.repository.UsersRepository;
 import com.chesshouzs.server.repository.cassandra.PlayerGameStatesRepository;
+import com.chesshouzs.server.service.rpc.module.RpcGameModule;
 import com.chesshouzs.server.util.GameHelper;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
 import com.chesshouzs.server.constants.SkillConstants;
@@ -71,6 +72,9 @@ public class RestMatchService {
 
     @Autowired 
     private KafkaMessageProducer messageProducer;
+
+    @Autowired 
+    private RpcGameModule rpcGameModule;
 
     public GameActiveDto GetMatchData(UUID userId){
         GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
@@ -205,12 +209,35 @@ public class RestMatchService {
         // if (!userId.equals(params.getWinnerId())){
         //     throw new Exception("Invalid actor");
         // }
-        System.out.println(userId.toString());
-        System.out.println(params.getWinnerId());
-        System.out.println(params.getGameId().toString());
         GameActive matchData = gameActiveRepository.findPlayerActiveMatch(userId);
         if (matchData == null){
             throw new Exception("Match data not found");
+        }
+
+        String key = RedisConstants.getGameMoveKey(matchData.getMovesCacheRef());
+        Map<String, String> notation = redis.hgetall(key);
+        if (notation == null){
+            throw new Exception("Match state not found");
+        }
+
+        String oldState = notation.get("move");
+        char [][] oldStateToArr = GameHelper.convertNotationToArray(oldState);
+        if (matchData.getBlackPlayer().getId().equals(userId)){
+            oldStateToArr = GameHelper.transformBoard(oldStateToArr);
+        }
+        oldState = GameHelper.convertArrayToNotation(oldStateToArr);
+
+        String newState = params.getState();
+        char [][] newStateToArr = GameHelper.convertNotationToArray(newState);
+        if (matchData.getBlackPlayer().getId().equals(userId)){
+            newStateToArr = GameHelper.transformBoard(oldStateToArr);
+        }
+        newState = GameHelper.convertArrayToNotation(newStateToArr);
+
+
+        Boolean validMove = rpcGameModule.validateMovement(oldState, newState);
+        if (!validMove){
+            throw new Exception("Invalid move");
         }
 
         Users winner, loser; 
