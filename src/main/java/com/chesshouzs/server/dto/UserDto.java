@@ -10,6 +10,8 @@ public class UserDto {
     private String profilePicture; 
     private int eloPoints;  
 
+    private int duration;
+
 
     public UserDto(String id, String username, String email, String profilePicture, int eloPoints) {
         this.id = id;
@@ -17,6 +19,15 @@ public class UserDto {
         this.email = email;
         this.profilePicture = profilePicture;
         this.eloPoints = eloPoints;
+    }
+
+    public UserDto(String id, String username, String email, String profilePicture, int eloPoints, int duration) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.profilePicture = profilePicture;
+        this.eloPoints = eloPoints;
+        this.duration = duration;
     }
 
     public String getId(){
@@ -57,5 +68,13 @@ public class UserDto {
 
     public void setEloPoints(int eloPoints) {
         this.eloPoints = eloPoints;
+    }
+
+    public int getDuration() {
+        return this.duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }
