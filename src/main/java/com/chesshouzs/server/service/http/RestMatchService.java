@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -103,6 +104,8 @@ public class RestMatchService {
 
         result.getWhitePlayer().setDuration(Integer.parseInt(notation.get("white_total_duration")));
         result.getBlackPlayer().setDuration(Integer.parseInt(notation.get("black_total_duration")));
+
+        result.setLastMovement(OffsetDateTime.parse(notation.get("last_movement")));
 
         return result;
     }
@@ -227,20 +230,29 @@ public class RestMatchService {
         }
 
         if (params.getType().equals(GameConstants.END_GAME_TIMEOUT_TYPE)){
-            LocalTime latestTimestamp = LocalTime.parse(notation.get("last_movement"), DateTimeFormatter.ofPattern("HH:mm:ss"));
+            String lastMovement = notation.get("last_movement");
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(lastMovement);            
+
+            LocalTime latestTimestamp = offsetDateTime.toLocalTime();
             LocalTime currentTime = LocalTime.now();
 
-            Duration duration = Duration.between(currentTime, latestTimestamp);
+            Duration duration = Duration.between(latestTimestamp, currentTime);
             long secondsDifference = duration.getSeconds();
 
-            if (Integer.parseInt(notation.get("turn")) == 1 && params.getWinnerId().equals(matchData.getWhitePlayer().getId())){
+            if (Integer.parseInt(notation.get("turn")) == 1 && params.getWinnerId().equals(matchData.getBlackPlayer().getId())){
                 Integer currentCumulativeDuration = Integer.parseInt(notation.get("white_total_duration"));
+                System.out.println(currentCumulativeDuration);
+                System.out.println(secondsDifference);
+                System.out.println(matchData.getGameTypeVariant().getDuration());
                 if (currentCumulativeDuration + secondsDifference < matchData.getGameTypeVariant().getDuration()){
                     throw new Exception("Invalid action");
                 }
 
-            } else if (Integer.parseInt(notation.get("turn")) == 0 && params.getWinnerId().equals(matchData.getBlackPlayer().getId())) {
+            } else if (Integer.parseInt(notation.get("turn")) == 0 && params.getWinnerId().equals(matchData.getWhitePlayer().getId())) {
                 Integer currentCumulativeDuration = Integer.parseInt(notation.get("black_total_duration"));
+                System.out.println(currentCumulativeDuration);
+                System.out.println(secondsDifference);
+                System.out.println(matchData.getGameTypeVariant().getDuration());                
                 if (currentCumulativeDuration + secondsDifference < matchData.getGameTypeVariant().getDuration()){
                     throw new Exception("Invalid action");
                 }
@@ -249,11 +261,7 @@ public class RestMatchService {
                 throw new Exception("Invalid turn");
             }
 
-            if (params.getWinnerId().equals(matchData.getWhitePlayer().getId())){
-                params.setWinnerId(matchData.getBlackPlayer().getId());
-            } else {
-                params.setWinnerId(matchData.getWhitePlayer().getId());
-            }            
+       
 
 
         } else if (params.getType().equals(GameConstants.END_GAME_CHECKMATE_TYPE) || params.getType().equals(GameConstants.END_GAME_STALEMATE_TYPE) || params.getType().equals(GameConstants.END_GAME_DRAW_TYPE)) {
