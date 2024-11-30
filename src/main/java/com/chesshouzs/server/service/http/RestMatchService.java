@@ -7,6 +7,10 @@ import java.util.function.Function;
 import java.util.Map;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -97,6 +101,11 @@ public class RestMatchService {
         } else {
             result.setTurn(GameConstants.BLACK_COLOR);
         }
+
+        result.getWhitePlayer().setDuration(Integer.parseInt(notation.get("white_total_duration")));
+        result.getBlackPlayer().setDuration(Integer.parseInt(notation.get("black_total_duration")));
+
+        result.setLastMovement(OffsetDateTime.parse(notation.get("last_movement")));
 
         return result;
     }
@@ -220,24 +229,61 @@ public class RestMatchService {
             throw new Exception("Match state not found");
         }
 
-        String oldState = notation.get("move");
-        char [][] oldStateToArr = GameHelper.convertNotationToArray(oldState);
-        if (matchData.getBlackPlayer().getId().equals(userId)){
-            oldStateToArr = GameHelper.transformBoard(oldStateToArr);
-        }
-        oldState = GameHelper.convertArrayToNotation(oldStateToArr);
+        if (params.getType().equals(GameConstants.END_GAME_TIMEOUT_TYPE)){
+            String lastMovement = notation.get("last_movement");
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(lastMovement);            
 
-        String newState = params.getState();
-        char [][] newStateToArr = GameHelper.convertNotationToArray(newState);
-        if (matchData.getBlackPlayer().getId().equals(userId)){
-            newStateToArr = GameHelper.transformBoard(oldStateToArr);
-        }
-        newState = GameHelper.convertArrayToNotation(newStateToArr);
+            LocalTime latestTimestamp = offsetDateTime.toLocalTime();
+            LocalTime currentTime = LocalTime.now();
+
+            Duration duration = Duration.between(latestTimestamp, currentTime);
+            long secondsDifference = duration.getSeconds();
+
+            if (Integer.parseInt(notation.get("turn")) == 1 && params.getWinnerId().equals(matchData.getBlackPlayer().getId())){
+                Integer currentCumulativeDuration = Integer.parseInt(notation.get("white_total_duration"));
+                System.out.println(currentCumulativeDuration);
+                System.out.println(secondsDifference);
+                System.out.println(matchData.getGameTypeVariant().getDuration());
+                if (currentCumulativeDuration + secondsDifference < matchData.getGameTypeVariant().getDuration()){
+                    throw new Exception("Invalid action");
+                }
+
+            } else if (Integer.parseInt(notation.get("turn")) == 0 && params.getWinnerId().equals(matchData.getWhitePlayer().getId())) {
+                Integer currentCumulativeDuration = Integer.parseInt(notation.get("black_total_duration"));
+                System.out.println(currentCumulativeDuration);
+                System.out.println(secondsDifference);
+                System.out.println(matchData.getGameTypeVariant().getDuration());                
+                if (currentCumulativeDuration + secondsDifference < matchData.getGameTypeVariant().getDuration()){
+                    throw new Exception("Invalid action");
+                }
+
+            } else {
+                throw new Exception("Invalid turn");
+            }
+
+       
 
 
-        Boolean validMove = rpcGameModule.validateMovement(oldState, newState);
-        if (!validMove){
-            throw new Exception("Invalid move");
+        } else if (params.getType().equals(GameConstants.END_GAME_CHECKMATE_TYPE) || params.getType().equals(GameConstants.END_GAME_STALEMATE_TYPE) || params.getType().equals(GameConstants.END_GAME_DRAW_TYPE)) {
+            String oldState = notation.get("move");
+            char [][] oldStateToArr = GameHelper.convertNotationToArray(oldState);
+            if (matchData.getBlackPlayer().getId().equals(userId)){
+                oldStateToArr = GameHelper.transformBoard(oldStateToArr);
+            }
+            oldState = GameHelper.convertArrayToNotation(oldStateToArr);
+    
+            String newState = params.getState();
+            char [][] newStateToArr = GameHelper.convertNotationToArray(newState);
+            if (matchData.getBlackPlayer().getId().equals(userId)){
+                newStateToArr = GameHelper.transformBoard(oldStateToArr);
+            }
+            newState = GameHelper.convertArrayToNotation(newStateToArr);
+    
+    
+            Boolean validMove = rpcGameModule.validateMovement(oldState, newState);
+            if (!validMove){
+                throw new Exception("Invalid move");
+            }
         }
 
         Users winner, loser; 

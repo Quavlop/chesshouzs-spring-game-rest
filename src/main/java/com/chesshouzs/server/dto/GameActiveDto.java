@@ -1,6 +1,7 @@
 package com.chesshouzs.server.dto;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class GameActiveDto {
@@ -13,6 +14,8 @@ public class GameActiveDto {
     private LocalDateTime endTime;
     private String gameNotation;
     private String turn;
+
+    private OffsetDateTime lastMovement;
 
 
     public GameActiveDto(UUID id, UserDto whitePlayer, UserDto blackPlayer, GameTypeVariantDto gameTypeVariant, LocalDateTime startTime, LocalDateTime endTime) {
@@ -88,4 +91,11 @@ public class GameActiveDto {
         this.endTime = endTime;
     }
     
+    public OffsetDateTime getLastMovement() {
+        return this.lastMovement;
+    }
+
+    public void setLastMovement(OffsetDateTime lastMovement) {
+        this.lastMovement = lastMovement;
+    }
 }
