@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
@@ -229,12 +230,15 @@ public class RestMatchService {
             throw new Exception("Match state not found");
         }
 
+
+        ZoneId jakartaZone = ZoneId.of("Asia/Jakarta");
+
         if (params.getType().equals(GameConstants.END_GAME_TIMEOUT_TYPE)){
             String lastMovement = notation.get("last_movement");
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(lastMovement);            
 
             LocalTime latestTimestamp = offsetDateTime.toLocalTime();
-            LocalTime currentTime = LocalTime.now();
+            LocalTime currentTime = LocalTime.now(jakartaZone);
 
             Duration duration = Duration.between(latestTimestamp, currentTime);
             long secondsDifference = duration.getSeconds();
@@ -294,10 +298,11 @@ public class RestMatchService {
             winner = matchData.getBlackPlayer();
             loser = matchData.getWhitePlayer();
         }
+        
 
         // change game_active status is_done to true 
         matchData.setIsDone(true);
-        matchData.setEndTime(LocalDateTime.now());
+        matchData.setEndTime(LocalDateTime.now(jakartaZone));
         gameActiveRepository.save(matchData);
 
         // elo calculation & accumulation & save to database
