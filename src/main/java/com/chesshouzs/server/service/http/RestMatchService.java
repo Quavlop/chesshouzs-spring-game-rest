@@ -250,7 +250,7 @@ public class RestMatchService {
                 System.out.println(currentTime);
                 System.out.println("EHEEH");
                 System.out.println(currentCumulativeDuration);
-                System.out.println(secondsDifference);
+                System.out.println(secondsDifference + " HAHA");
                 System.out.println(matchData.getGameTypeVariant().getDuration());
                 if (currentCumulativeDuration + secondsDifference < matchData.getGameTypeVariant().getDuration()){
                     throw new Exception("Invalid action");
@@ -262,7 +262,7 @@ public class RestMatchService {
                 System.out.println(currentTime);
                 System.out.println("EHEEH");
                 System.out.println(currentCumulativeDuration);
-                System.out.println(secondsDifference);
+                System.out.println(secondsDifference + "HEHEHEHE");
                 System.out.println(matchData.getGameTypeVariant().getDuration());                
                 if (currentCumulativeDuration + secondsDifference < matchData.getGameTypeVariant().getDuration()){
                     throw new Exception("Invalid action");
