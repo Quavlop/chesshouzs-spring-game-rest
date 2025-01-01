@@ -246,6 +246,9 @@ public class RestMatchService {
 
             if (Integer.parseInt(notation.get("turn")) == 1 && params.getWinnerId().equals(matchData.getBlackPlayer().getId())){
                 Integer currentCumulativeDuration = Integer.parseInt(notation.get("white_total_duration"));
+                System.out.println(latestTimestamp);
+                System.out.println(currentTime);
+                System.out.println("EHEEH");
                 System.out.println(currentCumulativeDuration);
                 System.out.println(secondsDifference);
                 System.out.println(matchData.getGameTypeVariant().getDuration());
@@ -255,6 +258,9 @@ public class RestMatchService {
 
             } else if (Integer.parseInt(notation.get("turn")) == 0 && params.getWinnerId().equals(matchData.getWhitePlayer().getId())) {
                 Integer currentCumulativeDuration = Integer.parseInt(notation.get("black_total_duration"));
+                System.out.println(latestTimestamp);
+                System.out.println(currentTime);
+                System.out.println("EHEEH");
                 System.out.println(currentCumulativeDuration);
                 System.out.println(secondsDifference);
                 System.out.println(matchData.getGameTypeVariant().getDuration());                
