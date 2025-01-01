@@ -229,6 +229,7 @@ public class RestMatchService {
 
         ZoneId jakartaZone = ZoneId.of("Asia/Jakarta");
 
+        System.out.println("STAT");
         if (params.getType().equals(GameConstants.END_GAME_TIMEOUT_TYPE)){
             String lastMovement = notation.get("last_movement");
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(lastMovement);            
