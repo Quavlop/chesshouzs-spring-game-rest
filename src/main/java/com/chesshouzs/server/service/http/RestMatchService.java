@@ -1,34 +1,27 @@
 package com.chesshouzs.server.service.http;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.Map;
-import java.util.List;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.Duration;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.chesshouzs.server.config.queue.KafkaMessageProducer;
-import com.chesshouzs.server.config.queue.KafkaMessageWrapper;
 import com.chesshouzs.server.constants.GameConstants;
 import com.chesshouzs.server.constants.KafkaConstants;
 import com.chesshouzs.server.constants.RedisConstants;
+import com.chesshouzs.server.constants.SkillConstants;
 import com.chesshouzs.server.dto.GameActiveDto;
 import com.chesshouzs.server.dto.custom.match.EndGameDto;
 import com.chesshouzs.server.dto.custom.match.PlayerSkillDataCountDto;
@@ -41,7 +34,6 @@ import com.chesshouzs.server.model.GameSkill;
 import com.chesshouzs.server.model.Users;
 import com.chesshouzs.server.model.cassandra.keys.PlayerGameStatePrimaryKeys;
 import com.chesshouzs.server.model.cassandra.tables.PlayerGameState;
-import com.chesshouzs.server.model.redis.GameMove;
 import com.chesshouzs.server.repository.GameActiveRepository;
 import com.chesshouzs.server.repository.GameSkillRepository;
 import com.chesshouzs.server.repository.RedisBaseRepository;
@@ -50,8 +42,12 @@ import com.chesshouzs.server.repository.cassandra.PlayerGameStatesRepository;
 import com.chesshouzs.server.service.rpc.module.RpcGameModule;
 import com.chesshouzs.server.util.GameHelper;
 import com.chesshouzs.server.util.exceptions.http.DataNotFoundExceptionHandler;
-import com.chesshouzs.server.constants.SkillConstants;
-import com.chesshouzs.server.util.utils.game.*;
+import com.chesshouzs.server.util.utils.game.CheckmateElo;
+import com.chesshouzs.server.util.utils.game.DrawElo;
+import com.chesshouzs.server.util.utils.game.Elo;
+import com.chesshouzs.server.util.utils.game.ResignElo;
+import com.chesshouzs.server.util.utils.game.StalemateElo;
+import com.chesshouzs.server.util.utils.game.TimeoutElo;
 
 
 @Service
@@ -239,6 +235,10 @@ public class RestMatchService {
 
             LocalTime latestTimestamp = offsetDateTime.toLocalTime();
             LocalTime currentTime = LocalTime.now(jakartaZone);
+            System.out.println(latestTimestamp);
+            System.out.println(currentTime);
+            System.out.println("EHEEH");
+            
 
             Duration duration = Duration.between(latestTimestamp, currentTime);
             long secondsDifference = duration.getSeconds();
